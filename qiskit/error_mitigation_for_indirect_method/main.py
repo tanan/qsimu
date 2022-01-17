@@ -78,7 +78,7 @@ def create_choi(t_list, q, cn, r, bn, direct=True):
     return Choi(qc).data
 
 
-def run(t_direct, t_indirect):
+def run(loop, t_direct, t_indirect):
     qubit = 4
     cn = [1] * qubit #[1,1,1,1,1]
     r = 0
@@ -88,9 +88,8 @@ def run(t_direct, t_indirect):
     choi_direct = np.array(np.zeros(2**choi_qubit))
     choi_indirect = np.array(np.zeros(2**choi_qubit))
 
-    loop = 100
     for i in range(0, loop):
-        print(datetime.datetime.now())
+        print("%s: " % datetime.datetime.now())
         choi_direct = choi_direct + create_choi(t_direct, qubit, cn, r, bn, True)
         choi_indirect = choi_indirect + create_choi(t_indirect, qubit, cn, r, bn, False)
 
@@ -100,6 +99,8 @@ def run(t_direct, t_indirect):
 if __name__ == '__main__':
   args = sys.argv
   gate_num = args[1]
+  loop = args[2]
+  print("loop: %s" % loop)
   if gate_num == '20':
     print("gate_num: %s" % gate_num)
     t_direct = [0.005, 0.005, 0.05, 0.05, 0.05, 0.05, 0.1, 0.2, 0.25, 0.25, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.99, 1, 2, 2]
@@ -113,4 +114,4 @@ if __name__ == '__main__':
     sys.exit("gate_num is not set.")
 
   t_indirect = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.25, 0.3, 0.4, 0.4, 0.4]
-  run(t_direct, t_indirect)
+  run(loop, t_direct, t_indirect)
