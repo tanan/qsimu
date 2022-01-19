@@ -79,7 +79,7 @@ def create_choi(t_list, q, cn, r, bn, direct=True):
 
 
 def run(loop, t_direct, t_indirect):
-    qubit = 4
+    qubit = 5
     cn = [1] * qubit #[1,1,1,1,1]
     r = 0
     bn = [0] * qubit #[0,0,0,0,0]
@@ -89,7 +89,7 @@ def run(loop, t_direct, t_indirect):
     choi_indirect = np.array(np.zeros(2**choi_qubit))
 
     for i in range(0, loop):
-        print("%s: " % datetime.datetime.now())
+        print("%s: %s" % (i, datetime.datetime.now()))
         choi_direct = choi_direct + create_choi(t_direct, qubit, cn, r, bn, True)
         choi_indirect = choi_indirect + create_choi(t_indirect, qubit, cn, r, bn, False)
 
