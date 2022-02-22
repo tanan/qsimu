@@ -133,12 +133,9 @@ def ansatz_circuit_for_indirect_by_xy(theta_list):
     circuit = QuantumCircuit(n_qubit)
     for d in range(depth):
         circuit.add_gate(CNOT(0, 1))
-        circuit.add_gate(merge(RY(0, theta_list[gate_set*d+4]), RZ(0, theta_list[gate_set*d+5])))
-        circuit.add_gate(merge(RY(1, theta_list[gate_set*d+6]), RZ(1, theta_list[gate_set*d+7])))
-        circuit.add_gate(create_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[0]))
-        circuit.add_gate(create_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[1]))
-        circuit.add_gate(create_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[2]))
-        circuit.add_gate(create_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[3]))
+        circuit.add_gate(merge(RY(0, theta_list[gate_set*d+depth]), RZ(0, theta_list[gate_set*d+(depth+1)])))
+        circuit.add_gate(merge(RY(1, theta_list[gate_set*d+(depth+2)]), RZ(1, theta_list[gate_set*d+(depth+3)])))
+        circuit.add_gate(create_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[d]))
 
     return circuit
 
@@ -147,9 +144,9 @@ def ansatz_circuit_for_indirect_by_ising(theta_list):
     circuit = QuantumCircuit(n_qubit)
     for d in range(depth):
         circuit.add_gate(CNOT(0, 1))
-        circuit.add_gate(merge(RY(0, theta_list[gate_set*d+1]), RZ(0, theta_list[gate_set*d+2])))
-        circuit.add_gate(merge(RY(1, theta_list[gate_set*d+3]), RZ(1, theta_list[gate_set*d+4])))
-        circuit.add_gate(create_ising_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, 1))
+        circuit.add_gate(merge(RY(0, theta_list[gate_set*d+depth]), RZ(0, theta_list[gate_set*d+(depth+1)])))
+        circuit.add_gate(merge(RY(1, theta_list[gate_set*d+(depth+2)]), RZ(1, theta_list[gate_set*d+(depth+3)])))
+        circuit.add_gate(create_ising_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[d]))
 
     return circuit
 
@@ -172,7 +169,9 @@ def init_hamiltonian():
 
 def run():
   cost_history = []
-  t = np.array([random.uniform(0.0,10.0), random.uniform(0.0,10.0), random.uniform(0.0,10.0), random.uniform(0.0,10.0)])
+  t = np.array([])
+  for i in range(depth):
+    t = np.append(t, random.uniform(0.0,10.0))
   init_random_list = np.append(t, np.random.random(2*n_qubit*(depth+1))*1e-1)
   # init_random_list = np.random.random(2*n_qubit*(depth+1))*1e-1
   cost_history.append(cost(init_random_list))
