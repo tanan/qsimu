@@ -172,8 +172,11 @@ def run():
   t = np.array([])
   for i in range(depth):
     t = np.append(t, random.uniform(0.0,10.0))
-  init_random_list = np.append(t, np.random.random(2*n_qubit*(depth+1))*1e-1)
-  # init_random_list = np.random.random(2*n_qubit*(depth+1))*1e-1
+
+  init_random_list = np.append(t, np.random.random(4*depth)*1e-1)
+  if gate == "direct":
+      init_random_list = np.append(t, np.random.random(2*n_qubit*(depth+1))*1e-1)
+
   cost_history.append(cost(init_random_list))
   method = "BFGS"
   options = {"disp": True, "maxiter": 50, "gtol": 1e-600}
@@ -183,7 +186,7 @@ def run():
   print(cost_history)
 
 n_qubit = 6
-depth = n_qubit * 2
+depth = n_qubit * 3
 cn = [1] * n_qubit
 r = 0
 bn = [0] * n_qubit
