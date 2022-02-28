@@ -194,6 +194,14 @@ def ansatz_circuit_for_indirect_by_ising(theta_list):
 
     return circuit
 
+def ansatz_circuit_for_indirect_by_xyz(theta_list):
+    circuit = QuantumCircuit(n_qubit)
+    for d in range(depth):
+        circuit.add_gate(RX(0, theta_list[gate_set*d+depth]))
+        circuit.add_gate(create_xyz_hamiltonian_time_evolution_gate(n_qubit, cn, r, bn, theta_list[d]))
+
+    return circuit
+
 def cost(theta_list):
   state = QuantumState(n_qubit) #|00000> を準備
   circuit = QuantumCircuit(n_qubit)
@@ -201,6 +209,8 @@ def cost(theta_list):
     circuit = ansatz_circuit_for_indirect_by_ising(theta_list)
   elif gate == 'indirect_by_xy_hamiltonian':
     circuit = ansatz_circuit_for_indirect_by_xy(theta_list)
+  elif gate == 'indirect_by_xyz_hamiltonian':
+    circuit = ansatz_circuit_for_indirect_by_xyz(theta_list)
   else:
     circuit = ansatz_circuit_for_direct(theta_list)
   
@@ -229,7 +239,7 @@ def run():
   print(cost_history)
 
 n_qubit = 6
-depth = n_qubit * 2
+depth = n_qubit * 6
 cn = [1] * n_qubit
 r = 0
 bn = [0] * n_qubit
