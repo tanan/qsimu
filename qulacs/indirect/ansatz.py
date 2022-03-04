@@ -158,3 +158,19 @@ class AnsatzIndirectByXY:
         circuit.add_gate(self.create_hamiltonian_gate(self.n_qubit, cn, r, bn, self.random_list[d]))
 
     return circuit
+
+class AnsatzIndirectByNone:
+  def __init__(self, n_qubit, random_list, depth):
+    self.n_qubit = n_qubit
+    self.random_list = random_list
+    self.depth = depth
+    self.gate_set = 4
+
+  def create_ansatz(self):
+    circuit = QuantumCircuit(self.n_qubit)
+    for d in range(self.depth):
+        circuit.add_gate(CNOT(0, 1))
+        circuit.add_gate(merge(RY(0, self.random_list[self.gate_set*d+self.depth]), RZ(0, self.random_list[self.gate_set*d+(self.depth+1)])))
+        circuit.add_gate(merge(RY(1, self.random_list[self.gate_set*d+(self.depth+2)]), RZ(1, self.random_list[self.gate_set*d+(self.depth+3)])))
+
+    return circuit

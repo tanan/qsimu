@@ -14,7 +14,10 @@ import random
 def cost(random_list):
   state = QuantumState(n_qubit)
   circuit = QuantumCircuit(n_qubit)
-  if gate == 'indirect_by_xy_hamiltonian':
+  if gate == 'indirect_by_none':
+    ansatz = AnsatzIndirectByNone(n_qubit, random_list, depth)
+    circuit = ansatz.create_ansatz()
+  elif gate == 'indirect_by_xy_hamiltonian':
     ansatz = AnsatzIndirectByXY(n_qubit, random_list, depth)
     circuit = ansatz.create_ansatz(cn, r, bn)
   elif gate == 'indirect_by_xyz_hamiltonian':
@@ -46,9 +49,11 @@ def run(t_range):
   opt = minimize(cost, init_random_list,
                 method=method,
                 callback=lambda x: cost_history.append(cost(x)))
-  filename = '%_%_%.txt' % (gate, depth, t_range)
+  filename = "%s_%s_%s.txt" % (gate, depth, t_range)
   f = open(filename, 'w')
-  f.write(cost_history)
+  print(cost_history)
+  for v in cost_history:
+    f.write(", %s" % str(v))
 
 ## init
 n_qubit = 6
