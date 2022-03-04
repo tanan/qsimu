@@ -82,7 +82,7 @@ class AnsatzIndirectByXYZ:
   def create_ansatz(self, cn):
     circuit = QuantumCircuit(self.n_qubit)
     for d in range(self.depth):
-        circuit.add_gate(RX(0, self.random_list[self.gate_set*d+self.depth]))
+        circuit.add_gate(merge(RX(0, self.random_list[self.gate_set*d+self.depth]), RY(0, self.random_list[self.gate_set*d+(self.depth+1)])))
         circuit.add_gate(self.create_hamiltonian_gate(self.n_qubit, cn, self.random_list[d]))
 
     return circuit
