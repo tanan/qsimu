@@ -26,13 +26,75 @@ class AnsatzDirect:
 
     return circuit
 
+class AnsatzIndirectByIsing:
+
+  def __init__(self, n_qubit, random_list, depth):
+    self.n_qubit = n_qubit
+    self.random_list = random_list
+    self.depth = depth
+    self.gate_set = 2
+
+  def create_hamiltonian_gate(self, n_qubit, cn, gamma, t):
+    I_gate = [[1,0],[0,1]]
+    X_gate = [[0,1],[1,0]]
+    Y_gate = [[0,0-1j],[0+1j,0]]
+    
+    XX= np.array(np.zeros(2**n_qubit))
+    Y= np.array(np.zeros(2**n_qubit))
+    for k in range(n_qubit-1):
+        for l in range(n_qubit):
+            if k==l:
+                if l==0:
+                    hamiX = X_gate
+                else:
+                    hamiX = np.kron(hamiX,X_gate)
+
+            elif k+1==l:
+                hamiX = np.kron(hamiX,X_gate)
+            else:
+                if l==0:
+                    hamiX = I_gate
+                else:
+                    hamiX = np.kron(hamiX,I_gate)
+        XX = XX+ 0.5*cn[k]*(1+gamma)*hamiX
+        
+    for m in range(n_qubit):
+        for n in range(n_qubit):
+            if m==n:
+                if n==0:
+                    hamiY = Y_gate
+                else:
+                    hamiY = np.kron(hamiY,Y_gate)
+            
+            else:
+                if n==0:
+                    hamiY = I_gate
+                else:
+                    hamiY = np.kron(hamiY,I_gate)
+        
+        Y = Y + hamiY
+
+    hamiltonian = XX + Y
+    hamiltonian_sparse = sparse.csc_matrix(hamiltonian)
+    hami_gate = expm(-1j*hamiltonian_sparse*t)
+    return DenseMatrix(list(range(n_qubit)), hami_gate.toarray())
+
+  def create_ansatz(self, cn, gamma):
+    circuit = QuantumCircuit(self.n_qubit)
+    for d in range(self.depth):
+        circuit.add_gate(merge(RX(0, self.random_list[self.gate_set*d+self.depth]), RY(0, self.random_list[self.gate_set*d+(self.depth+1)])))
+        circuit.add_gate(self.create_hamiltonian_gate(self.n_qubit, cn, gamma, self.random_list[d]))
+
+    return circuit
+
+
 class AnsatzIndirectByXYZ:
 
   def __init__(self, n_qubit, random_list, depth):
     self.n_qubit = n_qubit
     self.random_list = random_list
     self.depth = depth
-    self.gate_set = 4
+    self.gate_set = 2
 
   def create_hamiltonian_gate(self, n_qubit, cn, t):
     I_gate = [[1,0],[0,1]]
