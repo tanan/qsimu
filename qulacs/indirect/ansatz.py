@@ -34,7 +34,7 @@ class AnsatzIndirectByIsing:
     self.depth = depth
     self.gate_set = 2
 
-  def create_hamiltonian_gate(self, n_qubit, cn, gamma, t):
+  def create_hamiltonian_gate(self, n_qubit, cn, gamma, bn, t):
     I_gate = [[1,0],[0,1]]
     X_gate = [[0,1],[1,0]]
     Y_gate = [[0,0-1j],[0+1j,0]]
@@ -71,19 +71,19 @@ class AnsatzIndirectByIsing:
                     hamiY = I_gate
                 else:
                     hamiY = np.kron(hamiY,I_gate)
-        
-        Y = Y + hamiY
+
+        Y = Y + bn*hamiX
 
     hamiltonian = XX + Y
     hamiltonian_sparse = sparse.csc_matrix(hamiltonian)
     hami_gate = expm(-1j*hamiltonian_sparse*t)
     return DenseMatrix(list(range(n_qubit)), hami_gate.toarray())
 
-  def create_ansatz(self, cn, gamma):
+  def create_ansatz(self, cn, r):
     circuit = QuantumCircuit(self.n_qubit)
     for d in range(self.depth):
-        circuit.add_gate(merge(RX(0, self.random_list[self.gate_set*d+self.depth]), RY(0, self.random_list[self.gate_set*d+(self.depth+1)])))
-        circuit.add_gate(self.create_hamiltonian_gate(self.n_qubit, cn, gamma, self.random_list[d]))
+        circuit.add_gate(merge(RX(0, self.random_list[self.gate_set*d+(2*self.depth)]), RY(0, self.random_list[self.gate_set*d+(2*self.depth+1)])))
+        circuit.add_gate(self.create_hamiltonian_gate(self.n_qubit, cn, r, self.random_list[d+self.depth], self.random_list[d]))
 
     return circuit
 

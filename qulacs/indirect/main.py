@@ -1,5 +1,7 @@
 # coding: utf-8
 import sys
+
+from ansatz import AnsatzIndirectByIsing
 sys.path.append('..')
 from indirect.ansatz import *
 from mimetypes import init
@@ -23,6 +25,9 @@ def cost(random_list):
   elif gate == 'indirect_by_xyz_hamiltonian':
     ansatz = AnsatzIndirectByXYZ(n_qubit, random_list, depth)
     circuit = ansatz.create_ansatz(cn)
+  elif gate == 'indirect_by_ising_hamiltonian':
+    ansatz = AnsatzIndirectByIsing(n_qubit, random_list, depth)
+    circuit = ansatz.create_ansatz(cn, r)
   else:
     ansatz = AnsatzDirect(n_qubit, random_list, depth)
     circuit = ansatz.create_ansatz()
@@ -37,11 +42,23 @@ def init_hamiltonian():
 def run(t_range):
   cost_history = []
   t = np.array([])
+  bn = np.array([])
   for i in range(depth):
     t = np.append(t, random.uniform(0.0,t_range))
-  init_random_list = np.append(t, np.random.random(4*depth)*1e-1)
+    bn = np.append(bn, random.uniform(0.0, 1.0))
+  init_random_list = []
   if gate == "direct":
-      init_random_list = np.random.random(2*n_qubit*(depth+1))*1e-1
+    init_random_list = np.random.random(2*n_qubit*(depth+1))*1e-1
+  elif gate == "indirect_by_ising_hamiltonian":
+    if isRandomIsing:
+      init_random_list = np.append(t, bn)
+    else:
+      init_random_list = np.append(t, np.array([1]*depth))
+    init_random_list = np.append(init_random_list, np.random.random(gate_set_ising*depth)*1e-1)
+  else:
+    init_random_list = np.append(t, np.random.random(gate_set*depth)*1e-1)
+  
+  print(init_random_list)
 
   cost_history.append(cost(init_random_list))
   method = "BFGS"
@@ -62,7 +79,10 @@ cn = [1] * n_qubit
 r = 0
 bn = [0] * n_qubit
 gate = "direct"
+gate_set = 4
+gate_set_ising = 2
 qulacs_hamiltonian = init_hamiltonian()
+isRandomIsing = True
 
 if __name__ == '__main__':
   args = sys.argv
