@@ -1,4 +1,5 @@
 # coding: utf-8
+from cmath import cos
 import sys
 import yaml
 
@@ -34,6 +35,14 @@ def record(x):
   param_history.append(x)
   cost_history.append(cost(x))
 
+def output(param_history, cost_history):
+  param_path = "results/%s_%s_%s_%s_%s_%s_param.txt" % (config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
+  cost_path = "results/%s_%s_%s_%s_%s_%s_cost.txt" % (config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
+  print(param_history)
+  print(cost_history)
+  np.savetxt(param_path, param_history)
+  np.savetxt(cost_path, cost_history)
+
 def run():
   init_random_list, bounds = randomize(n_qubit, config)
   global param_history
@@ -46,12 +55,9 @@ def run():
                 method=method,
                 bounds=bounds,
                 callback=record)
-  filepath = "results/%s_%s_%s.txt" % (config['gate']['type'], config['depth'], config['max_time'])
-  f = open(filepath, 'w')
-  print(param_history)
-  print(cost_history)
-  for v in cost_history:
-    f.write(", %s" % str(v))
+  print("param_history: %s" % param_history)
+  print("cost_history: %s" % cost_history)
+  output(param_history, cost_history)
 
 ## init
 n_qubit = 6
