@@ -84,7 +84,7 @@ class AnsatzIndirectByIsing:
     for d in range(self.depth):
         circuit.add_gate(merge(RX(0, self.random_list[self.gate_set*d+(2*self.depth)]), RY(0, self.random_list[self.gate_set*d+(2*self.depth+1)])))
         # TODO: cn, rをrandom化する
-        circuit.add_gate(self.create_hamiltonian_gate(1, 1, self.random_list[d+self.depth], self.random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 1, self.random_list[d+self.depth], self.random_list[d]))
 
     return circuit
 
@@ -147,7 +147,7 @@ class AnsatzIndirectByXYZ:
     for d in range(self.depth):
         circuit.add_gate(merge(RX(0, self.random_list[self.gate_set*d+self.depth]), RY(0, self.random_list[self.gate_set*d+(self.depth+1)])))
         # TODO: cnをrandom化する
-        circuit.add_gate(self.create_hamiltonian_gate(1, self.random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, self.random_list[d]))
 
     return circuit
 
@@ -220,7 +220,7 @@ class AnsatzIndirectByXY:
         circuit.add_gate(merge(RY(0, self.random_list[self.gate_set*d+self.depth]), RZ(0, self.random_list[self.gate_set*d+(self.depth+1)])))
         circuit.add_gate(merge(RY(1, self.random_list[self.gate_set*d+(self.depth+2)]), RZ(1, self.random_list[self.gate_set*d+(self.depth+3)])))
         # TODO: cn,r,bnをrandom化する
-        circuit.add_gate(self.create_hamiltonian_gate(1, 0, 0, self.random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, [0]*self.n_qubit, self.random_list[d]))
 
     return circuit
 
