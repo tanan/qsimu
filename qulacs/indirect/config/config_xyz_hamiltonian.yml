@@ -3,6 +3,6 @@ max_time: 10.0
 gate:
   type: "indirect_by_xyz_hamiltonian"
   parametric_rotation_gate_set: 2
-  is_r_random: true
-  is_cn_random: true
+  is_r_random: false
+  is_cn_random: false
   is_bn_random: false
