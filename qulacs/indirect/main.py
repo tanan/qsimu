@@ -36,8 +36,8 @@ def record(x):
   cost_history.append(cost(x))
 
 def output(param_history, cost_history):
-  param_path = "results/%s_%s_%s_%s_%s_%s_param.txt" % (config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
-  cost_path = "results/%s_%s_%s_%s_%s_%s_cost.txt" % (config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
+  param_path = "results/%squbit_%s_%s_%s_%s_%s_%s_param.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
+  cost_path = "results/%squbit_%s_%s_%s_%s_%s_%s_cost.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
   print(param_history)
   print(cost_history)
   np.savetxt(param_path, param_history)
@@ -60,7 +60,7 @@ def run():
   output(param_history, cost_history)
 
 ## init
-n_qubit = 6
+n_qubit = 20
 qulacs_hamiltonian = init_hamiltonian()
 config = {}
 param_history = []
