@@ -5,9 +5,9 @@ def create_time_constraints(depth, random_list_num):
   matrix = np.array([])
   for i in range(depth):
     for j in range(depth):
-      if j == i:
+      if j == (depth-1)-i:
         matrix = np.append(matrix, 1)
-      elif j == i+1:
+      elif j == (depth-1)-i-1:
         matrix = np.append(matrix, -1)
       else:
         matrix = np.append(matrix, 0)
