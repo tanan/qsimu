@@ -63,7 +63,7 @@ def run():
   output(param_history, cost_history)
 
 ## init
-n_qubit = 20
+n_qubit = 6
 qulacs_hamiltonian = init_hamiltonian()
 config = {}
 param_history = []
