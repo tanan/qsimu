@@ -1,0 +1,8 @@
+depth: 12
+max_time: 1.0
+gate:
+  type: "indirect_by_xy_hamiltonian"
+  parametric_rotation_gate_set: 4
+  is_r_random: false
+  is_cn_random: false
+  is_bn_random: false

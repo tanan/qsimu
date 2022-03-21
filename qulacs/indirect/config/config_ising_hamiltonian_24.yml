@@ -1,5 +1,5 @@
 depth: 24
-max_time: 10.0
+max_time: 1.0
 gate:
   type: "indirect_by_ising_hamiltonian"
   parametric_rotation_gate_set: 2
