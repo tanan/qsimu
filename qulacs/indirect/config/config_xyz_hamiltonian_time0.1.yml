@@ -1,4 +1,4 @@
-depth: 8
+depth: 10
 max_time: 0.1
 gate:
   type: "indirect_by_xyz_hamiltonian"
