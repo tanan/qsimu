@@ -46,18 +46,24 @@ def output(param_history, cost_history):
 
 def run():
   init_random_list, bounds = randomize(n_qubit, config)
-  constraints = create_time_constraints(config['depth'], len(init_random_list))
+  if config['gate']['type'] != 'direct':
+    constraints = create_time_constraints(config['depth'], len(init_random_list))
   global param_history
   global cost_history
   param_history.append(init_random_list)
   cost_history.append(cost(init_random_list))
-  method = "SLSQP"
   # options = {"disp": True, "maxiter": 50, "gtol": 1e-600}
-  opt = minimize(cost, init_random_list,
-                method=method,
-                constraints=constraints,
+  if config['gate']['type'] == 'direct':
+    opt = minimize(cost, init_random_list,
+                method="BFGS",
                 bounds=bounds,
                 callback=record)
+  else:
+    opt = minimize(cost, init_random_list,
+                  method="SLSQP",
+                  constraints=constraints,
+                  bounds=bounds,
+                  callback=record)
   print("param_history: %s" % param_history)
   print("cost_history: %s" % cost_history)
   output(param_history, cost_history)
