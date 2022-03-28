@@ -35,7 +35,7 @@ class AnsatzIndirectByIsing:
     self.gate_set = 2
     self.is_bn_random = is_bn_random
 
-  def create_hamiltonian_gate(self, cn, gamma, bn, t):
+  def create_hamiltonian_gate(self, cn, bn, t):
     I_gate = [[1,0],[0,1]]
     X_gate = [[0,1],[1,0]]
     Y_gate = [[0,0-1j],[0+1j,0]]
@@ -57,7 +57,7 @@ class AnsatzIndirectByIsing:
                     hamiX = I_gate
                 else:
                     hamiX = np.kron(hamiX,I_gate)
-        XX = XX+ 0.5*cn[k]*(1+gamma)*hamiX
+        XX = XX+ 0.5*cn[k]*hamiX
         
     for m in range(self.n_qubit):
         for n in range(self.n_qubit):
@@ -91,12 +91,16 @@ class AnsatzIndirectByIsing:
     for d in range(self.depth):
       if self.is_bn_random:
         # + time + bn
-        circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+1])))
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 1, self.random_list[d+self.depth:d+self.depth+self.n_qubit], self.random_list[d]))
+        # circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+1])))
+        circuit.add_gate(RX(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)]))
+        circuit.add_gate(RX(1, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+1]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, self.random_list[d+self.depth:d+self.depth+self.n_qubit], self.random_list[d]))
       else:
         # + time
-        circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.gate_set*d)+1])))
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 1, [0.0]*self.n_qubit, self.random_list[d]))
+        # circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.gate_set*d)+1])))
+        circuit.add_gate(RX(0, self.random_list[self.depth+(self.gate_set*d)]))
+        circuit.add_gate(RX(1, self.random_list[self.depth+(self.gate_set*d)+1]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, [0.0]*self.n_qubit, self.random_list[d]))
 
     return circuit
 
