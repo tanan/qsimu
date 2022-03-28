@@ -5,4 +5,4 @@ gate:
   parametric_rotation_gate_set: 4
   is_r_random: false
   is_cn_random: false
-  is_bn_random: true
+  is_bn_random: false
