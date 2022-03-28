@@ -61,7 +61,6 @@ def run():
   if config['gate']['type'] == 'direct':
     opt = minimize(cost, init_random_list,
                 method="BFGS",
-                bounds=bounds,
                 callback=record)
   else:
     opt = minimize(cost, init_random_list,
