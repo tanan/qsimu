@@ -73,7 +73,7 @@ class AnsatzIndirectByIsing:
                 else:
                     hamiY = np.kron(hamiY,I_gate)
 
-        Y = Y + bn[m]*hamiX
+        Y = Y + bn[m]*hamiY
 
     hamiltonian = XX + Y
     hamiltonian_sparse = sparse.csc_matrix(hamiltonian)
