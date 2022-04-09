@@ -1,5 +1,4 @@
 import numpy as np
-import random
 from scipy.optimize import Bounds
 
 def randomize(n_qubit, config):
