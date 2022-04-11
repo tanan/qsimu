@@ -2,6 +2,7 @@
 from cmath import cos
 import sys
 import yaml
+from datetime import datetime as dt
 
 sys.path.append('..')
 from indirect.ansatz import *
@@ -41,14 +42,16 @@ def record(x):
   iter_history.append(iteration)
 
 def output(param_history, cost_history, iter_history):
+  tdatetime = dt.now()
+  tstr = tdatetime.strftime('%Y%m%d%H%M')
   if config['gate']['type'] == 'direct':
     param_path = "results/%squbit_%s_%s_param.txt" % (n_qubit, config['gate']['type'], config['depth'])
     cost_path = "results/%squbit_%s_%s_cost.txt" % (n_qubit, config['gate']['type'], config['depth'])
     iter_path = "results/%squbit_%s_%s_iter.txt" % (n_qubit, config['gate']['type'], config['depth'])
   else:
-    param_path = "results/%squbit_%s_%s_%s_%s_%s_%s_param.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
-    cost_path = "results/%squbit_%s_%s_%s_%s_%s_%s_cost.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
-    iter_path = "results/%squbit_%s_%s_%s_%s_%s_%s_iter.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'])
+    param_path = "results/%squbit_%s_%s_%s_%s_%s_%s_param_%s.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'], tstr)
+    cost_path = "results/%squbit_%s_%s_%s_%s_%s_%s_cost_%s.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'], tstr)
+    iter_path = "results/%squbit_%s_%s_%s_%s_%s_%s_iter_%s.txt" % (n_qubit, config['gate']['type'], config['depth'], config['max_time'], config['gate']['is_r_random'], config['gate']['is_cn_random'], config['gate']['is_bn_random'], tstr)
 
   print(param_history)
   print(cost_history)

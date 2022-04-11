@@ -1,8 +1,8 @@
 from mimetypes import init
-import qulacs
 from qulacs import QuantumCircuit
 from qulacs.gate import CNOT, CZ, RX, RY, RZ, merge, DenseMatrix
 import numpy as np
+import random
 from scipy import sparse
 from scipy.sparse.linalg import expm
 
@@ -34,6 +34,7 @@ class AnsatzIndirectByIsing:
     self.depth = depth
     self.gate_set = 2
     self.is_bn_random = is_bn_random
+    self.bn = random.uniform(-1.0, 1.0)
 
   def create_hamiltonian_gate(self, cn, bn, t):
     I_gate = [[1,0],[0,1]]
@@ -102,7 +103,7 @@ class AnsatzIndirectByIsing:
         # circuit.add_gate(merge(RX(1, self.random_list[self.depth+(self.gate_set*d)+2]), RY(1, self.random_list[self.depth+(self.gate_set*d)+3])))
         circuit.add_gate(RZ(0, self.random_list[self.depth+(self.gate_set*d)]))
         circuit.add_gate(RZ(1, self.random_list[self.depth+(self.gate_set*d)+1]))
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, [0.0]*self.n_qubit, self.random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, [self.bn]*self.n_qubit, self.random_list[d]))
 
     return circuit
 
@@ -176,6 +177,7 @@ class AnsatzIndirectByXY:
     self.depth = depth
     self.gate_set = 4
     self.is_bn_random = is_bn_random
+    self.bn = random.uniform(-1.0, 1.0)
   
   def create_hamiltonian_gate(self, cn, gamma, bn, t):
     I_gate = [[1,0],[0,1]]
@@ -249,7 +251,8 @@ class AnsatzIndirectByXY:
         else:
           circuit.add_gate(merge(RY(0, self.random_list[self.depth+(self.gate_set*d)]), RZ(0, self.random_list[self.depth+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, self.random_list[self.depth+(self.gate_set*d)+2]), RZ(1, self.random_list[self.depth+(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, [0]*self.n_qubit, self.random_list[d]))
+          # circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, self.bn, self.random_list[d]))
+          circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, [self.bn]*self.n_qubit, self.random_list[d]))
 
     return circuit
 
