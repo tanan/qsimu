@@ -28,12 +28,12 @@ class AnsatzDirect:
 
 class AnsatzIndirectByIsing:
 
-  def __init__(self, n_qubit, random_list, depth, gate_set, is_bn_random):
+  def __init__(self, n_qubit, random_list, depth, gate_set, bn):
     self.n_qubit = n_qubit
     self.random_list = random_list
     self.depth = depth
     self.gate_set = gate_set
-    self.is_bn_random = is_bn_random
+    self.bn = bn
 
   def create_hamiltonian_gate(self, cn, bn, t):
     I_gate = [[1,0],[0,1]]
@@ -89,20 +89,20 @@ class AnsatzIndirectByIsing:
     '''
     circuit = QuantumCircuit(self.n_qubit)
     for d in range(self.depth):
-      if self.is_bn_random:
+      if self.bn['type'] == "random":
         # + time + bn
         # circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+1])))
         # circuit.add_gate(merge(RX(1, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+2]), RY(1, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+3])))
         circuit.add_gate(RZ(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)]))
         circuit.add_gate(RZ(1, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+1]))
         circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, self.random_list[d+self.depth:d+self.depth+self.n_qubit], self.random_list[d]))
-      else:
+      elif self.bn['type'] == "static":
         # + time
         # circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.gate_set*d)+1])))
         # circuit.add_gate(merge(RX(1, self.random_list[self.depth+(self.gate_set*d)+2]), RY(1, self.random_list[self.depth+(self.gate_set*d)+3])))
         circuit.add_gate(RZ(0, self.random_list[self.depth+(self.gate_set*d)]))
         circuit.add_gate(RZ(1, self.random_list[self.depth+(self.gate_set*d)+1]))
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, [0.0]*self.n_qubit, self.random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, self.bn['value'], self.random_list[d]))
 
     return circuit
 
@@ -170,12 +170,12 @@ class AnsatzIndirectByXYZ:
     return circuit
 
 class AnsatzIndirectByXY:
-  def __init__(self, n_qubit, random_list, depth, gate_set, is_bn_random):
+  def __init__(self, n_qubit, random_list, depth, gate_set, bn):
     self.n_qubit = n_qubit
     self.random_list = random_list
     self.depth = depth
     self.gate_set = gate_set
-    self.is_bn_random = is_bn_random
+    self.bn = bn
   
   def create_hamiltonian_gate(self, cn, gamma, bn, t):
     I_gate = [[1,0],[0,1]]
@@ -242,14 +242,14 @@ class AnsatzIndirectByXY:
     circuit = QuantumCircuit(self.n_qubit)
     for d in range(self.depth):
         circuit.add_gate(CNOT(0, 1))
-        if self.is_bn_random:
+        if self.bn['type'] == "random":
           circuit.add_gate(merge(RY(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)]), RZ(0, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+2]), RZ(1, self.random_list[self.depth+(self.depth*self.n_qubit)+(self.gate_set*d)+3])))
           circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, self.random_list[d+self.depth:d+self.depth+self.n_qubit], self.random_list[d]))
-        else:
+        elif self.bn['type'] == "static":
           circuit.add_gate(merge(RY(0, self.random_list[self.depth+(self.gate_set*d)]), RZ(0, self.random_list[self.depth+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, self.random_list[self.depth+(self.gate_set*d)+2]), RZ(1, self.random_list[self.depth+(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, [0]*self.n_qubit, self.random_list[d]))
+          circuit.add_gate(self.create_hamiltonian_gate([1]*self.n_qubit, 0, self.bn['value'], self.random_list[d]))
 
     return circuit
 

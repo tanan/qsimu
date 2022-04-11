@@ -4,9 +4,11 @@ class DBClient:
   def __init__(self, filepath):
     self.conn = sqlite3.connect(filepath)
   
-  def create_table(self):
+  def create_table(self, force=False):
     cur = self.conn.cursor()
-    # cur.execute("DROP TABLE IF EXISTS jobs")
+    if force:
+      cur.execute("DROP TABLE IF EXISTS jobs")
+
     cur.execute(
       """
       CREATE TABLE jobs(
@@ -15,7 +17,7 @@ class DBClient:
         execution_second INTEGER,
         nqubit INTEGER,
         depth INTEGER,
-        gate_type,
+        gate_type TEXT,
         gate_set TEXT,
         bn TEXT,
         cn TEXT,
@@ -47,7 +49,7 @@ class DBClient:
         cost,
         parameter,
         iteration
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
     """
     ,(
       job.creation_time,

@@ -1,6 +1,5 @@
 class Job:
-  def __init__(self, creation_date, creation_time, execution_second, nqubit, depth, gate_type, gate_set, bn, cn, r, max_time, cost, parameter, iteration):
-    self.creation_date = creation_date
+  def __init__(self, creation_time, execution_second, nqubit, depth, gate_type, gate_set, bn, cn, r, max_time, cost, parameter, iteration):
     self.creation_time = creation_time
     self.execution_second = execution_second
     self.nqubit = nqubit
