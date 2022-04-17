@@ -99,4 +99,6 @@ if __name__ == '__main__':
   path = args[1]
   with open(path, 'r') as f:
     config = yaml.safe_load(f)
-    run()
+    for i in np.arange(-1.0, 1.0, 0.1):
+      config['gate']['bn']['value'] = [i] * config['nqubit']
+      run()
