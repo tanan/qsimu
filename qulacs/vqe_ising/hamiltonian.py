@@ -11,5 +11,5 @@ def create_qubit_operator(nqubit):
     for j in range(i+1, nqubit):
       if i+1 == j:
         hami = hami + QubitOperator('Z' + str(i) + ' ' + 'Z' + str(j))
-  
+
   return hami
