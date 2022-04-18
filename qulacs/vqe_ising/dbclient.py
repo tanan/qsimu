@@ -19,13 +19,17 @@ class DBClient:
         depth INTEGER,
         gate_type TEXT,
         gate_set TEXT,
+        bn_type TEXT,
         bn TEXT,
         cn TEXT,
         r TEXT,
         max_time TEXT,
         cost TEXT,
         parameter TEXT,
-        iteration TEXT
+        iteration TEXT,
+        cost_history TEXT,
+        parameter_history TEXT,
+        iteration_history TEXT
       )
       """
     )
@@ -42,14 +46,18 @@ class DBClient:
         depth,
         gate_type,
         gate_set,
+        bn_type,
         bn,
         cn,
         r,
         max_time,
         cost,
         parameter,
-        iteration
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+        iteration,
+        cost_history,
+        parameter_history,
+        iteration_history
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     """
     ,(
       job.creation_time,
@@ -58,13 +66,17 @@ class DBClient:
       job.depth,
       job.gate_type,
       job.gate_set,
+      job.bn_type,
       job.bn,
       job.cn,
       job.r,
       job.max_time,
       job.cost,
       job.parameter,
-      job.iteration
+      job.iteration,
+      job.cost_history,
+      job.parameter_history,
+      job.iteration_history
     ))
     self.conn.commit()
 
@@ -80,13 +92,17 @@ class DBClient:
           depth,
           gate_type,
           gate_set,
+          bn_type,
           bn,
           cn,
           r,
           max_time,
           cost,
           parameter,
-          iteration
+          iteration,
+          cost_history,
+          parameter_history,
+          iteration_history
         FROM jobs
       """
     )

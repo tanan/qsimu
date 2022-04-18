@@ -53,6 +53,16 @@ def record(x):
   cost_history.append(cost(x))
   iter_history.append(iteration)
 
+def reset():
+  global param_history
+  global cost_history
+  global iter_history
+  global iteration
+  param_history = []
+  cost_history = []
+  iter_history = []
+  iteration = 0
+
 def run():
   ## performance measurement
   start_time = time.perf_counter()
@@ -83,15 +93,19 @@ def run():
     config['depth'],
     config['gate']['type'],
     str(config['gate']['parametric_rotation_gate_set']),
-    config['gate']['bn']['type'],
-    config['gate']['cn']['type'],
-    config['gate']['r']['type'],
+    str(config['gate']['bn']['type']),
+    str(config['gate']['bn']['value']),
+    str(config['gate']['cn']['value']),
+    str(config['gate']['r']['value']),
     config['gate']['max_time'],
+    str(cost_history[-1]),
+    str(param_history[-1]),
+    str(iter_history[-1]),
     str(cost_history),
     to_string(param_history),
     str(iter_history)
   )
-  client = DBClient("data/results.sqlite3")
+  client = DBClient("data/job_results.sqlite3")
   client.insert(job)
 
 if __name__ == '__main__':
@@ -102,3 +116,4 @@ if __name__ == '__main__':
     for i in np.arange(-1.0, 1.0, 0.1):
       config['gate']['bn']['value'] = [i] * config['nqubit']
       run()
+      reset()

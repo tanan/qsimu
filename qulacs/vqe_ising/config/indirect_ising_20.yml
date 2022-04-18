@@ -1,8 +1,8 @@
-depth: 8
+depth: 20
 nqubit: 7
 gate:
-  type: "indirect_xy"
-  parametric_rotation_gate_set: 4
+  type: "indirect_ising"
+  parametric_rotation_gate_set: 2
   max_time: 10
   constraints: ""
   bn:

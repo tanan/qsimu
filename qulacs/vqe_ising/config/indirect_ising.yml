@@ -1,5 +1,5 @@
-depth: 8
-nqubit: 4
+depth: 12
+nqubit: 7
 gate:
   type: "indirect_ising"
   parametric_rotation_gate_set: 2
