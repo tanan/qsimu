@@ -1,4 +1,4 @@
-depth: 12
+depth: 16
 nqubit: 7
 gate:
   type: "indirect_ising"
@@ -7,10 +7,10 @@ gate:
   constraints: ""
   bn:
     type: "static"
-    value: [0.0,0.0,0.0,0.0]
+    value: [0.0,0.0,0.0,0.0,0.0]
   cn:
     type: "static"
-    value: [1.0,1.0,1.0,1.0]
+    value: [1.0,1.0,1.0,1.0,1.0]
   r:
     type: "static"
-    value: [0.0,0.0,0.0,0.0]
+    value: [0.0,0.0,0.0,0.0,0.0]
