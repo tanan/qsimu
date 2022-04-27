@@ -166,7 +166,7 @@ class AnsatzIndirectByXYZ:
     for d in range(self.depth):
         circuit.add_gate(merge(RX(0, random_list[self.depth+(self.gate_set*d)]), RY(0, random_list[self.depth+(self.gate_set*d)+1])))
         # TODO: cnをrandom化する
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
 
     return circuit
 
