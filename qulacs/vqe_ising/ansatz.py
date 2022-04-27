@@ -7,30 +7,28 @@ from scipy import sparse
 from scipy.sparse.linalg import expm
 
 class AnsatzDirect:
-  def __init__(self, nqubit, random_list, depth):
+  def __init__(self, nqubit, depth):
     self.nqubit = nqubit
-    self.random_list = random_list
     self.depth = depth
 
-  def create_ansatz(self):
+  def create_ansatz(self, random_list):
     circuit = QuantumCircuit(self.nqubit)
     for d in range(self.depth):
       for i in range(self.nqubit):
-        circuit.add_gate(merge(RY(i, self.random_list[2*i+2*self.nqubit*d]), RZ(i, self.random_list[2*i+1+2*self.nqubit*d])))
+        circuit.add_gate(merge(RY(i, random_list[2*i+2*self.nqubit*d]), RZ(i, random_list[2*i+1+2*self.nqubit*d])))
       for i in range(self.nqubit//2):
         circuit.add_gate(CZ(2*i, 2*i+1))
       for i in range(self.nqubit//2-1):
         circuit.add_gate(CZ(2*i+1, 2*i+2))
     for i in range(self.nqubit):
-      circuit.add_gate(merge(RY(i, self.random_list[2*i+2*self.nqubit*self.depth]), RZ(i, self.random_list[2*i+1+2*self.nqubit*self.depth])))
+      circuit.add_gate(merge(RY(i, random_list[2*i+2*self.nqubit*self.depth]), RZ(i, random_list[2*i+1+2*self.nqubit*self.depth])))
 
     return circuit
 
 class AnsatzIndirectByIsing:
 
-  def __init__(self, nqubit, random_list, depth, gate_set, bn):
+  def __init__(self, nqubit, depth, gate_set, bn):
     self.nqubit = nqubit
-    self.random_list = random_list
     self.depth = depth
     self.gate_set = gate_set
     self.bn = bn
@@ -83,7 +81,7 @@ class AnsatzIndirectByIsing:
     time_evol_op = np.dot(np.dot(self.eigen_vecs, np.diag(np.exp(-1j*t*self.diag))), self.eigen_vecs.T.conj())
     return DenseMatrix([i for i in range(self.nqubit)], time_evol_op)
 
-  def create_ansatz(self):
+  def create_ansatz(self, random_list):
     '''
     ansatzを作成する
     ハミルトニアンゲートはdepthごとに別々のパラメータとなる.
@@ -94,31 +92,31 @@ class AnsatzIndirectByIsing:
     for d in range(self.depth):
       if self.bn['type'] == "random":
         # + time + bn
-        # circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
-        # circuit.add_gate(merge(RX(1, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RY(1, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
-        circuit.add_gate(RZ(0, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]))
-        circuit.add_gate(RZ(1, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1]))
-        circuit.add_gate(self.create_hamiltonian_gate(self.random_list[d+self.depth:d+self.depth+self.nqubit], self.random_list[d]))
+        # circuit.add_gate(merge(RX(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RY(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
+        # circuit.add_gate(merge(RX(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RY(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
+        circuit.add_gate(RZ(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]))
+        circuit.add_gate(RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1]))
+        circuit.add_gate(self.create_hamiltonian_gate(random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
       elif self.bn['type'] == "static":
         # + time
-        # circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.gate_set*d)+1])))
-        # circuit.add_gate(merge(RX(1, self.random_list[self.depth+(self.gate_set*d)+2]), RY(1, self.random_list[self.depth+(self.gate_set*d)+3])))
-        circuit.add_gate(RZ(0, self.random_list[self.depth+(self.gate_set*d)]))
-        circuit.add_gate(RZ(1, self.random_list[self.depth+(self.gate_set*d)+1]))
-        circuit.add_gate(self.create_hamiltonian_gate(self.random_list[d]))
+        # circuit.add_gate(merge(RX(0, random_list[self.depth+(self.gate_set*d)]), RY(0, random_list[self.depth+(self.gate_set*d)+1])))
+        # circuit.add_gate(merge(RX(1, random_list[self.depth+(self.gate_set*d)+2]), RY(1, random_list[self.depth+(self.gate_set*d)+3])))
+        circuit.add_gate(RZ(0, random_list[self.depth+(self.gate_set*d)]))
+        circuit.add_gate(RZ(1, random_list[self.depth+(self.gate_set*d)+1]))
+        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
 
     return circuit
 
 
 class AnsatzIndirectByXYZ:
 
-  def __init__(self, nqubit, random_list, depth, gate_set):
+  def __init__(self, nqubit, depth, gate_set):
     self.nqubit = nqubit
-    self.random_list = random_list
     self.depth = depth
     self.gate_set = gate_set
+    self.diag, self.eigen_vecs = self.create_hamiltonian([1]*self.nqubit)
 
-  def create_hamiltonian_gate(self, cn, t):
+  def create_hamiltonian(self, cn):
     I_gate = [[1,0],[0,1]]
     X_gate = [[0,1],[1,0]]
     Y_gate = [[0,0-1j],[0+1j,0]]
@@ -157,25 +155,24 @@ class AnsatzIndirectByXYZ:
         ZZ = ZZ+ 0.5*cn[k]*hamiZ
 
     hamiltonian = XX + YY + ZZ
-    hamiltonian_sparse = sparse.csc_matrix(hamiltonian)
-    np.set_printoptions(threshold=10000)
-    hami_gate = expm(-1j*hamiltonian_sparse*t)
-    return DenseMatrix(list(range(self.nqubit)), hami_gate.toarray())
+    return np.linalg.eigh(hamiltonian)
 
+  def create_hamiltonian_gate(self, t):
+    time_evol_op = np.dot(np.dot(self.eigen_vecs, np.diag(np.exp(-1j*t*self.diag))), self.eigen_vecs.T.conj())
+    return DenseMatrix([i for i in range(self.nqubit)], time_evol_op)
 
-  def create_ansatz(self):
+  def create_ansatz(self, random_list):
     circuit = QuantumCircuit(self.nqubit)
     for d in range(self.depth):
-        circuit.add_gate(merge(RX(0, self.random_list[self.depth+(self.gate_set*d)]), RY(0, self.random_list[self.depth+(self.gate_set*d)+1])))
+        circuit.add_gate(merge(RX(0, random_list[self.depth+(self.gate_set*d)]), RY(0, random_list[self.depth+(self.gate_set*d)+1])))
         # TODO: cnをrandom化する
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, self.random_list[d]))
+        circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, random_list[d]))
 
     return circuit
 
 class AnsatzIndirectByXY:
-  def __init__(self, nqubit, random_list, depth, gate_set, bn):
+  def __init__(self, nqubit, depth, gate_set, bn):
     self.nqubit = nqubit
-    self.random_list = random_list
     self.depth = depth
     self.gate_set = gate_set
     self.bn = bn
@@ -236,7 +233,7 @@ class AnsatzIndirectByXY:
     time_evol_op = np.dot(np.dot(self.eigen_vecs, np.diag(np.exp(-1j*t*self.diag))), self.eigen_vecs.T.conj())
     return DenseMatrix([i for i in range(self.nqubit)], time_evol_op)
 
-  def create_ansatz(self):
+  def create_ansatz(self, random_list):
     '''
     ansatzを作成する
     ハミルトニアンゲートはdepthごとに別々のパラメータとなる.
@@ -247,28 +244,27 @@ class AnsatzIndirectByXY:
     for d in range(self.depth):
         circuit.add_gate(CNOT(0, 1))
         if self.bn['type'] == "random":
-          circuit.add_gate(merge(RY(0, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RZ(0, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
-          circuit.add_gate(merge(RY(1, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RZ(1, self.random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, 0, self.random_list[d+self.depth:d+self.depth+self.nqubit], self.random_list[d]))
+          circuit.add_gate(merge(RY(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
+          circuit.add_gate(merge(RY(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
+          circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, 0, random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
         elif self.bn['type'] == "static":
-          circuit.add_gate(merge(RY(0, self.random_list[self.depth+(self.gate_set*d)]), RZ(0, self.random_list[self.depth+(self.gate_set*d)+1])))
-          circuit.add_gate(merge(RY(1, self.random_list[self.depth+(self.gate_set*d)+2]), RZ(1, self.random_list[self.depth+(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate(self.random_list[d]))
+          circuit.add_gate(merge(RY(0, random_list[self.depth+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.gate_set*d)+1])))
+          circuit.add_gate(merge(RY(1, random_list[self.depth+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.gate_set*d)+3])))
+          circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
 
     return circuit
 
 class AnsatzIndirectByNone:
-  def __init__(self, nqubit, random_list, gate_set, depth):
+  def __init__(self, nqubit, gate_set, depth):
     self.nqubit = nqubit
-    self.random_list = random_list
     self.depth = depth
     self.gate_set = gate_set
 
-  def create_ansatz(self):
+  def create_ansatz(self, random_list):
     circuit = QuantumCircuit(self.nqubit)
     for d in range(self.depth):
         circuit.add_gate(CNOT(0, 1))
-        circuit.add_gate(merge(RY(0, self.random_list[self.gate_set*d+self.depth]), RZ(0, self.random_list[self.gate_set*d+(self.depth+1)])))
-        circuit.add_gate(merge(RY(1, self.random_list[self.gate_set*d+(self.depth+2)]), RZ(1, self.random_list[self.gate_set*d+(self.depth+3)])))
+        circuit.add_gate(merge(RY(0, random_list[self.gate_set*d+self.depth]), RZ(0, random_list[self.gate_set*d+(self.depth+1)])))
+        circuit.add_gate(merge(RY(1, random_list[self.gate_set*d+(self.depth+2)]), RZ(1, random_list[self.gate_set*d+(self.depth+3)])))
 
     return circuit

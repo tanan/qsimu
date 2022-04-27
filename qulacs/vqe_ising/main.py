@@ -1,5 +1,6 @@
 # coding: utf-8
 from cmath import cos
+from random import random
 import sys
 import yaml
 import time
@@ -24,22 +25,28 @@ param_history = []
 cost_history = []
 iter_history = []
 iteration = 0
+ansatz = None
+
+def init_ansatz():
+  global config
+  if config['gate']['type'] == 'indirect_xy':
+    ansatz = AnsatzIndirectByXY(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
+  elif config['gate']['type'] == 'indirect_xyz':
+    ansatz = AnsatzIndirectByXYZ(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'])
+  elif config['gate']['type'] == 'indirect_ising':
+    ansatz = AnsatzIndirectByIsing(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
+  else:
+    ansatz = AnsatzDirect(config['nqubit'], config['depth'])
+  return ansatz
 
 def cost(random_list):
   global config
   global iteration
+  global ansatz
   iteration+=1
   state = QuantumState(config['nqubit'])
   circuit = QuantumCircuit(config['nqubit'])
-  if config['gate']['type'] == 'indirect_xy':
-    ansatz = AnsatzIndirectByXY(config['nqubit'], random_list, config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
-  elif config['gate']['type'] == 'indirect_xyz':
-    ansatz = AnsatzIndirectByXYZ(config['nqubit'], random_list, config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
-  elif config['gate']['type'] == 'indirect_ising':
-    ansatz = AnsatzIndirectByIsing(config['nqubit'], random_list, config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
-  else:
-    ansatz = AnsatzDirect(config['nqubit'], random_list, config['depth'])
-  circuit = ansatz.create_ansatz()  
+  circuit = ansatz.create_ansatz(random_list)  
   circuit.update_quantum_state(state)
   
   global qulacs_hamiltonian
@@ -64,6 +71,7 @@ def reset():
   iteration = 0
 
 def run():
+  global config
   ## performance measurement
   start_time = time.perf_counter()
   now = datetime.datetime.now()
@@ -71,6 +79,10 @@ def run():
   ## init qulacs hamiltonian
   global qulacs_hamiltonian
   qulacs_hamiltonian = create_ising_hamiltonian(config['nqubit'])
+
+  ## init ansatz instance
+  global ansatz
+  ansatz = init_ansatz()
 
   ## randomize and create constraints
   init_random_list, bounds = randomize(config['nqubit'], config)
