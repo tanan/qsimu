@@ -179,8 +179,9 @@ class AnsatzIndirectByXY:
     self.depth = depth
     self.gate_set = gate_set
     self.bn = bn
-  
-  def create_hamiltonian_gate(self, cn, gamma, bn, t):
+    self.diag, self.eigen_vecs = self.create_hamiltonian([1]*self.nqubit, 0, bn['value'])
+
+  def create_hamiltonian(self, cn, gamma, bn):
     I_gate = [[1,0],[0,1]]
     X_gate = [[0,1],[1,0]]
     Y_gate = [[0,0-1j],[0+1j,0]]
@@ -229,11 +230,11 @@ class AnsatzIndirectByXY:
         Zn = Zn + bn[m]*hamiZ
 
     hamiltonian = XX + YY + Zn
-    hamiltonian_sparse = sparse.csc_matrix(hamiltonian)
-    np.set_printoptions(threshold=10000)
-    hami_gate = expm(-1j*hamiltonian_sparse*t)
-    return DenseMatrix(list(range(self.nqubit)), hami_gate.toarray())
+    return np.linalg.eigh(hamiltonian)
 
+  def create_hamiltonian_gate(self, t):
+    time_evol_op = np.dot(np.dot(self.eigen_vecs, np.diag(np.exp(-1j*t*self.diag))), self.eigen_vecs.T.conj())
+    return DenseMatrix([i for i in range(self.nqubit)], time_evol_op)
 
   def create_ansatz(self):
     '''
@@ -252,7 +253,7 @@ class AnsatzIndirectByXY:
         elif self.bn['type'] == "static":
           circuit.add_gate(merge(RY(0, self.random_list[self.depth+(self.gate_set*d)]), RZ(0, self.random_list[self.depth+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, self.random_list[self.depth+(self.gate_set*d)+2]), RZ(1, self.random_list[self.depth+(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, 0, self.bn['value'], self.random_list[d]))
+          circuit.add_gate(self.create_hamiltonian_gate(self.random_list[d]))
 
     return circuit
 
