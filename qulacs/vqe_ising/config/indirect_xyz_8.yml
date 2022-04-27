@@ -1,0 +1,16 @@
+depth: 8
+nqubit: 7
+gate:
+  type: "indirect_xyz"
+  parametric_rotation_gate_set: 4
+  max_time: 10
+  constraints: ""
+  bn:
+    type: "static"
+    value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+  cn:
+    type: "static"
+    value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+  r:
+    type: "static"
+    value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
