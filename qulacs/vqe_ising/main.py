@@ -90,10 +90,12 @@ def run():
   record(init_random_list)
 
   ## calculation
+  options = { 'maxiter' : 200}
   opt = minimize(cost, init_random_list,
                 method="SLSQP",
                 constraints=constraints,
                 bounds=bounds,
+                options=options,
                 callback=record)
 
   output(param_history, cost_history, iter_history)
