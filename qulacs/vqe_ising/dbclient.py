@@ -109,3 +109,42 @@ class DBClient:
     jobs = cur.fetchall()
     for job in jobs:
       print(job)
+
+  def selectResultsByNQubitAndGateType(self, nqubit, gate_type, bn):
+    cur = self.conn.cursor()
+    cur.execute(
+      """
+        SELECT
+          id,
+          creation_time,
+          execution_second,
+          nqubit,
+          depth,
+          gate_type,
+          gate_set,
+          bn_type,
+          bn,
+          cn,
+          r,
+          max_time,
+          cost,
+          parameter,
+          iteration,
+          cost_history,
+          parameter_history,
+          iteration_history
+        FROM jobs
+        WHERE
+          nqubit = ?
+        AND
+          gate_type = ?
+        AND
+          bn = ?
+      """
+    ,(
+      nqubit,
+      gate_type,
+      bn
+    ))
+    jobs = cur.fetchall()
+    return jobs
