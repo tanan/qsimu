@@ -90,7 +90,7 @@ def run():
   record(init_random_list)
 
   ## calculation
-  options = { 'maxiter' : 300}
+  options = { 'maxiter' : 1000}
   opt = minimize(cost, init_random_list,
                 method="SLSQP",
                 constraints=constraints,

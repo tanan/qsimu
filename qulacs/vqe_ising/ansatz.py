@@ -97,7 +97,7 @@ class AnsatzIndirectByIsing:
         circuit.add_gate(RZ(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]))
         circuit.add_gate(RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1]))
         circuit.add_gate(self.create_hamiltonian_gate(random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
-      elif self.bn['type'] == "static":
+      elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
         # + time
         # circuit.add_gate(merge(RX(0, random_list[self.depth+(self.gate_set*d)]), RY(0, random_list[self.depth+(self.gate_set*d)+1])))
         # circuit.add_gate(merge(RX(1, random_list[self.depth+(self.gate_set*d)+2]), RY(1, random_list[self.depth+(self.gate_set*d)+3])))
@@ -247,7 +247,7 @@ class AnsatzIndirectByXY:
           circuit.add_gate(merge(RY(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
           circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, 0, random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
-        elif self.bn['type'] == "static":
+        elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
           circuit.add_gate(merge(RY(0, random_list[self.depth+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, random_list[self.depth+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.gate_set*d)+3])))
           circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
