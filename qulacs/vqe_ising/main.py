@@ -127,7 +127,12 @@ if __name__ == '__main__':
   path = args[1]
   with open(path, 'r') as f:
     config = yaml.safe_load(f)
-    for k in range(100):
-      config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * 2 - 1
-      run()
-      reset()
+    if config['gate']['type'] == 'direct':
+      for k in range(10):
+        run()
+        reset()
+    else:
+      for k in range(100):
+        config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * 6 - 3
+        run()
+        reset()
