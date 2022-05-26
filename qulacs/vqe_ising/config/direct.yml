@@ -1,0 +1,4 @@
+depth: 8
+nqubit: 7
+gate:
+  type: "direct"

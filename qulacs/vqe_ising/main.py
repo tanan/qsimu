@@ -131,6 +131,10 @@ if __name__ == '__main__':
       for k in range(10):
         run()
         reset()
+    elif config['gate']['type'] == 'indirect_xyz':
+      for k in range(100):
+        run()
+        reset()
     else:
       for k in range(100):
         config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * 6 - 3
