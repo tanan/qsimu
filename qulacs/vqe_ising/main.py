@@ -100,25 +100,46 @@ def run():
 
   output(param_history, cost_history, iter_history)
   end_time = time.perf_counter()
-  job = Job(
-    now,
-    end_time - start_time,
-    config['nqubit'],
-    config['depth'],
-    config['gate']['type'],
-    str(config['gate']['parametric_rotation_gate_set']),
-    str(config['gate']['bn']['type']),
-    str(config['gate']['bn']['value']),
-    str(config['gate']['cn']['value']),
-    str(config['gate']['r']['value']),
-    config['gate']['max_time'],
-    str(cost_history[-1]),
-    str(param_history[-1]),
-    str(iter_history[-1]),
-    str(cost_history),
-    to_string(param_history),
-    str(iter_history)
-  )
+  if config['gate']['type'] == 'direct':
+    job = Job(
+      now,
+      end_time - start_time,
+      config['nqubit'],
+      config['depth'],
+      config['gate']['type'],
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      str(cost_history[-1]),
+      str(param_history[-1]),
+      str(iter_history[-1]),
+      str(cost_history),
+      to_string(param_history),
+      str(iter_history)
+    )
+  else:
+    job = Job(
+      now,
+      end_time - start_time,
+      config['nqubit'],
+      config['depth'],
+      config['gate']['type'],
+      str(config['gate']['parametric_rotation_gate_set']),
+      str(config['gate']['bn']['type']),
+      str(config['gate']['bn']['value']),
+      str(config['gate']['cn']['value']),
+      str(config['gate']['r']['value']),
+      config['gate']['max_time'],
+      str(cost_history[-1]),
+      str(param_history[-1]),
+      str(iter_history[-1]),
+      str(cost_history),
+      to_string(param_history),
+      str(iter_history)
+    )
   client = DBClient("data/job_results.sqlite3")
   client.insert(job)
 
