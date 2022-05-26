@@ -137,6 +137,6 @@ if __name__ == '__main__':
         reset()
     else:
       for k in range(100):
-        config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * 6 - 3
+        config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - 3
         run()
         reset()
