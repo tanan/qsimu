@@ -193,3 +193,31 @@ class DBClient:
     ))
     jobs = cur.fetchall()
     return jobs
+
+  def selectResultsByNQubitAndDepth(self, nqubit, depth, gate_type):
+    cur = self.conn.cursor()
+    cur.execute(
+      """
+        SELECT
+          id,
+          creation_time,
+          execution_second,
+          nqubit,
+          depth,
+          cost,
+          iteration
+        FROM jobs
+        WHERE
+          nqubit = ?
+        AND
+          depth = ?
+        AND
+          gate_type = ?
+      """
+    ,(
+      nqubit,
+      depth,
+      gate_type
+    ))
+    jobs = cur.fetchall()
+    return jobs
