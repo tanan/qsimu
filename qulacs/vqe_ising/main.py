@@ -12,7 +12,7 @@ from vqe_ising.ansatz import AnsatzIndirectByXY, AnsatzIndirectByXYZ, AnsatzIndi
 from vqe_ising.random_list import randomize
 from vqe_ising.hamiltonian import create_ising_hamiltonian
 from vqe_ising.constraints import create_time_constraints
-from vqe_ising.output import to_string, output
+from vqe_ising.output import to_string
 from vqe_ising.job import Job
 from vqe_ising.dbclient import DBClient
 from qulacs import QuantumState, QuantumCircuit
@@ -98,7 +98,6 @@ def run():
                 options=options,
                 callback=record)
 
-  output(param_history, cost_history, iter_history)
   end_time = time.perf_counter()
   if config['gate']['type'] == 'direct':
     job = Job(
@@ -107,6 +106,7 @@ def run():
       config['nqubit'],
       config['depth'],
       config['gate']['type'],
+      None,
       None,
       None,
       None,
@@ -129,6 +129,7 @@ def run():
       config['gate']['type'],
       str(config['gate']['parametric_rotation_gate_set']),
       str(config['gate']['bn']['type']),
+      str(config['gate']['bn']['range']),
       str(config['gate']['bn']['value']),
       str(config['gate']['cn']['value']),
       str(config['gate']['r']['value']),

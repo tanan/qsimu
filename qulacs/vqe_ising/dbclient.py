@@ -1,4 +1,5 @@
 import sqlite3
+from pathlib import Path
 
 class DBClient:
   def __init__(self, filepath):
@@ -9,57 +10,14 @@ class DBClient:
     if force:
       cur.execute("DROP TABLE IF EXISTS jobs")
 
-    cur.execute(
-      """
-      CREATE TABLE jobs(
-        id INTEGER PRIMARY KEY,
-        creation_time TIMESTAMP,
-        execution_second INTEGER,
-        nqubit INTEGER,
-        depth INTEGER,
-        gate_type TEXT,
-        gate_set TEXT,
-        bn_type TEXT,
-        bn TEXT,
-        cn TEXT,
-        r TEXT,
-        max_time TEXT,
-        cost TEXT,
-        parameter TEXT,
-        iteration TEXT,
-        cost_history TEXT,
-        parameter_history TEXT,
-        iteration_history TEXT
-      )
-      """
-    )
+    sql = Path('sql/create_table_job.sql').read_text()
+    cur.execute(sql)
     self.conn.commit()
 
   def insert(self, job):
     cur = self.conn.cursor()
-    cur.execute(
-    """
-      INSERT INTO jobs (
-        creation_time,
-        execution_second,
-        nqubit,
-        depth,
-        gate_type,
-        gate_set,
-        bn_type,
-        bn,
-        cn,
-        r,
-        max_time,
-        cost,
-        parameter,
-        iteration,
-        cost_history,
-        parameter_history,
-        iteration_history
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-    """
-    ,(
+    sql = Path('sql/insert_job.sql').read_text()
+    cur.execute(sql ,(
       job.creation_time,
       job.execution_second,
       job.nqubit,
@@ -67,6 +25,7 @@ class DBClient:
       job.gate_type,
       job.gate_set,
       job.bn_type,
+      job.bn_range,
       job.bn,
       job.cn,
       job.r,
@@ -80,144 +39,23 @@ class DBClient:
     ))
     self.conn.commit()
 
-  def select(self):
+  def find(self):
+    sql = Path('sql/find_all_job.sql').read_text()
     cur = self.conn.cursor()
-    cur.execute(
-      """
-        SELECT
-          id,
-          creation_time,
-          execution_second,
-          nqubit,
-          depth,
-          gate_type,
-          gate_set,
-          bn_type,
-          bn,
-          cn,
-          r,
-          max_time,
-          cost,
-          parameter,
-          iteration,
-          cost_history,
-          parameter_history,
-          iteration_history
-        FROM jobs
-      """
-    )
-    jobs = cur.fetchall()
-    for job in jobs:
-      print(job)
-
-  def selectResultsByNQubitAndGateType(self, nqubit, gate_type, bn, depth):
-    cur = self.conn.cursor()
-    cur.execute(
-      """
-        SELECT
-          id,
-          creation_time,
-          execution_second,
-          nqubit,
-          depth,
-          gate_type,
-          gate_set,
-          bn_type,
-          bn,
-          cn,
-          r,
-          max_time,
-          cost,
-          parameter,
-          iteration,
-          cost_history,
-          parameter_history,
-          iteration_history
-        FROM jobs
-        WHERE
-          nqubit = ?
-        AND
-          gate_type = ?
-        AND
-          bn = ?
-        AND
-          depth = ?
-      """
-    ,(
-      nqubit,
-      gate_type,
-      bn,
-      depth
-    ))
+    cur.execute(sql)
     jobs = cur.fetchall()
     return jobs
 
-  def selectResultsByNQubitAndGateTypeAndBnType(self, nqubit, gate_type, bn_type, depth):
+  def findJob(self, nqubit, depth, gate_type, bn_type=None, bn_range=None, bn_value=None):
     cur = self.conn.cursor()
-    cur.execute(
-      """
-        SELECT
-          id,
-          creation_time,
-          execution_second,
-          nqubit,
-          depth,
-          gate_type,
-          gate_set,
-          bn_type,
-          bn,
-          cn,
-          r,
-          max_time,
-          cost,
-          parameter,
-          iteration,
-          cost_history,
-          parameter_history,
-          iteration_history
-        FROM jobs
-        WHERE
-          nqubit = ?
-        AND
-          gate_type = ?
-        AND
-          bn_type = ?
-        AND
-          depth = ?
-      """
-    ,(
-      nqubit,
-      gate_type,
-      bn_type,
-      depth
-    ))
-    jobs = cur.fetchall()
-    return jobs
-
-  def selectResultsByNQubitAndDepth(self, nqubit, depth, gate_type):
-    cur = self.conn.cursor()
-    cur.execute(
-      """
-        SELECT
-          id,
-          creation_time,
-          execution_second,
-          nqubit,
-          depth,
-          cost,
-          iteration
-        FROM jobs
-        WHERE
-          nqubit = ?
-        AND
-          depth = ?
-        AND
-          gate_type = ?
-      """
-    ,(
-      nqubit,
-      depth,
-      gate_type
-    ))
+    if bn_type == None:
+      sql = Path('sql/find_job_by_gate_type.sql').read_text()
+      cur.execute(sql, (nqubit, depth, gate_type))
+    elif bn_value == None:
+      sql = Path('sql/find_job_by_gate_type_and_bn_type.sql').read_text()
+      cur.execute(sql, (nqubit, depth, gate_type, bn_type, bn_range))
+    else:
+      sql = Path('sql/find_job_by_gate_type_and_bn_type_and_bn_value.sql').read_text()
+      cur.execute(sql, (nqubit, depth, gate_type, bn_type, bn_value))
     jobs = cur.fetchall()
     return jobs
