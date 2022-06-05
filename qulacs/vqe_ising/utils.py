@@ -24,6 +24,7 @@ def getResult(nqubit, depth, method, bn_type=None, bn_range=None, bn_value=None)
     "method": method,
     "depth": depth,
     "bn_type": bn_type,
+    "bn_range": bn_range,
     "bn_value": str(bn_value).strip("[").strip("]").split(",")[0],
     "cost": {
         "min": np.min(cost_list),

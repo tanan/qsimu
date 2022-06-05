@@ -48,14 +48,14 @@ class DBClient:
 
   def findJob(self, nqubit, depth, gate_type, bn_type=None, bn_range=None, bn_value=None):
     cur = self.conn.cursor()
-    if bn_type == None:
+    if bn_type == 'static':
+      sql = Path('sql/find_job_by_gate_type_and_bn_value.sql').read_text()
+      cur.execute(sql, (nqubit, depth, gate_type, bn_value))
+    elif bn_type == 'static_random':
+      sql = Path('sql/find_job_by_gate_type_and_bn_range.sql').read_text()
+      cur.execute(sql, (nqubit, depth, gate_type, bn_range))
+    else:
       sql = Path('sql/find_job_by_gate_type.sql').read_text()
       cur.execute(sql, (nqubit, depth, gate_type))
-    elif bn_value == None:
-      sql = Path('sql/find_job_by_gate_type_and_bn_type.sql').read_text()
-      cur.execute(sql, (nqubit, depth, gate_type, bn_type, bn_range))
-    else:
-      sql = Path('sql/find_job_by_gate_type_and_bn_type_and_bn_value.sql').read_text()
-      cur.execute(sql, (nqubit, depth, gate_type, bn_type, bn_value))
     jobs = cur.fetchall()
     return jobs

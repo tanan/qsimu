@@ -24,8 +24,11 @@ class MagneticField(Enum):
   BN_09 = 0.8999999999999995
   BN_10 = 0.09999999999999964
 
+def create_bn(x, nqubit):
+  return str([x.value] * nqubit)
+
 def create_bn_list(nqubit):
   l = []
   for x in MagneticField:
-    l.append(str([x.value] * nqubit))
+    l.append(create_bn(x, nqubit))
   return l

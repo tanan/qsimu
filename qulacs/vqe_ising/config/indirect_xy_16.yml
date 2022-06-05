@@ -7,7 +7,7 @@ gate:
   constraints: ""
   bn:
     type: "static_random"
-    range: 4
+    range: 8
   cn:
     type: "static"
     value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]

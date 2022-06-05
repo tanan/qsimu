@@ -26,6 +26,6 @@ AND
 AND
   gate_type = ?
 AND
-  bn_type = ?
+  bn_type = 'static'
 AND
-  bn_range = ?
+  bn = ?
