@@ -46,7 +46,7 @@ def cost(random_list):
   iteration+=1
   state = QuantumState(config['nqubit'])
   circuit = QuantumCircuit(config['nqubit'])
-  circuit = ansatz.create_ansatz(random_list)  
+  circuit = ansatz.create_ansatz(random_list)
   circuit.update_quantum_state(state)
   
   global qulacs_hamiltonian
@@ -160,6 +160,6 @@ if __name__ == '__main__':
         reset()
     else:
       for k in range(100):
-        config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - 3
+        config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)
         run()
         reset()
