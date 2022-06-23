@@ -158,6 +158,12 @@ if __name__ == '__main__':
       for k in range(100):
         run()
         reset()
+    elif config['gate']['bn']['type'] == 'static':
+      for i in np.arange(-1.0, 1.0, 0.1):
+        for k in range(10):
+          config['gate']['bn']['value'] = [i] * config['nqubit']
+          run()
+          reset()
     else:
       for k in range(100):
         config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)

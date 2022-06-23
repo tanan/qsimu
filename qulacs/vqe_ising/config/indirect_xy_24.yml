@@ -6,8 +6,9 @@ gate:
   max_time: 10
   constraints: ""
   bn:
-    type: "static_random"
-    range: 6
+    type: "static"
+    value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+    range: None
   cn:
     type: "static"
     value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]
