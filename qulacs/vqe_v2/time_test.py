@@ -51,15 +51,17 @@ def run(init_random_list):
   ansatz = init_ansatz()
 
   ## calculation
-  cost(init_random_list)
+  print(init_random_list)
+  print(cost(init_random_list))
   for k in [-5.0, -4.0, -3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0]:
     print(cost(np.append(k, init_random_list[1:])))
 
 if __name__ == '__main__':
   args = sys.argv
   path = args[1]
-  params = args[2]
-  init_random_list = [ float(x) for x in params.replace(' ', '').strip('[').strip(']').strip().split(',') ]
+  # params = args[2]
+  # init_random_list = [ float(x) for x in params.replace(' ', '').strip('[').strip(']').strip().split(',') ]
+  init_random_list = np.loadtxt('data/xy_params.txt')
   with open(path, 'r') as f:
     config = yaml.safe_load(f)
     run(init_random_list)
