@@ -10,7 +10,7 @@ gate:
     # type: "static_random"
     # range: 1
     type: "static"
-    value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+    value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
   cn:
     type: "static"
     value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]
