@@ -53,7 +53,7 @@ class XYAnsatz(Ansatz):
           else:
             hamiZ = np.kron(hamiZ,PauliGate.I_gate.value)
 
-      Zn = Zn + bn[m]*hamiZ
+      Zn = Zn + bn['value'][m]*hamiZ
 
     hamiltonian = XX + YY + Zn
     return np.linalg.eigh(hamiltonian)

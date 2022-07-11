@@ -87,11 +87,6 @@ def run():
 
   ## randomize and create constraints
   init_random_list, bounds = randomize(config['nqubit'], config)
-  
-  ## temp
-  init_random_list = np.loadtxt('data/xy_params.txt')
-  print(init_random_list)
-
   record(init_random_list)
 
   ## calculation
