@@ -20,27 +20,27 @@ class XYZAnsatz(Ansatz):
         for l in range(self.nqubit):
             if k==l:
                 if l==0:
-                    hamiX = PauliGate.X_gate
-                    hamiY = PauliGate.Y_gate
-                    hamiZ = PauliGate.Z_gate
+                    hamiX = PauliGate.X_gate.value
+                    hamiY = PauliGate.Y_gate.value
+                    hamiZ = PauliGate.Z_gate.value
                 else:
-                    hamiX = np.kron(hamiX,PauliGate.X_gate)
-                    hamiY = np.kron(hamiY,PauliGate.Y_gate)
-                    hamiZ = np.kron(hamiZ,PauliGate.Z_gate)
+                    hamiX = np.kron(hamiX,PauliGate.X_gate.value)
+                    hamiY = np.kron(hamiY,PauliGate.Y_gate.value)
+                    hamiZ = np.kron(hamiZ,PauliGate.Z_gate.value)
 
             elif k+1==l:
-                hamiX = np.kron(hamiX,PauliGate.X_gate)
-                hamiY = np.kron(hamiY,PauliGate.Y_gate)
-                hamiZ = np.kron(hamiZ,PauliGate.Z_gate)
+                hamiX = np.kron(hamiX,PauliGate.X_gate.value)
+                hamiY = np.kron(hamiY,PauliGate.Y_gate.value)
+                hamiZ = np.kron(hamiZ,PauliGate.Z_gate.value)
             else:
                 if l==0:
-                    hamiX = PauliGate.I_gate
-                    hamiY = PauliGate.I_gate
-                    hamiZ = PauliGate.I_gate
+                    hamiX = PauliGate.I_gate.value
+                    hamiY = PauliGate.I_gate.value
+                    hamiZ = PauliGate.I_gate.value
                 else:
-                    hamiX = np.kron(hamiX,PauliGate.I_gate)
-                    hamiY = np.kron(hamiY,PauliGate.I_gate)
-                    hamiZ = np.kron(hamiZ,PauliGate.I_gate)
+                    hamiX = np.kron(hamiX,PauliGate.I_gate.value)
+                    hamiY = np.kron(hamiY,PauliGate.I_gate.value)
+                    hamiZ = np.kron(hamiZ,PauliGate.I_gate.value)
         XX = XX+ 0.5*cn[k]*hamiX
         YY = YY+ 0.5*cn[k]*hamiY
         ZZ = ZZ+ 0.5*cn[k]*hamiZ

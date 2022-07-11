@@ -19,32 +19,32 @@ class IsingAnsatz(Ansatz):
         for l in range(self.nqubit):
             if k==l:
                 if l==0:
-                    hamiX = PauliGate.X_gate
+                    hamiX = PauliGate.X_gate.value
                 else:
-                    hamiX = np.kron(hamiX, PauliGate.X_gate)
+                    hamiX = np.kron(hamiX, PauliGate.X_gate.value)
 
             elif k+1==l:
-                hamiX = np.kron(hamiX, PauliGate.X_gate)
+                hamiX = np.kron(hamiX, PauliGate.X_gate.value)
             else:
                 if l==0:
-                    hamiX = PauliGate.I_gate
+                    hamiX = PauliGate.I_gate.value
                 else:
-                    hamiX = np.kron(hamiX, PauliGate.I_gate)
+                    hamiX = np.kron(hamiX, PauliGate.I_gate.value)
         XX = XX+ 0.5*cn[k]*hamiX
 
     for m in range(self.nqubit):
       for n in range(self.nqubit):
         if m==n:
           if n==0:
-            hamiY = PauliGate.Y_gate
+            hamiY = PauliGate.Y_gate.value
           else:
-            hamiY = np.kron(hamiY, PauliGate.Y_gate)
+            hamiY = np.kron(hamiY, PauliGate.Y_gate.value)
         
         else:
           if n==0:
-            hamiY = PauliGate.I_gate
+            hamiY = PauliGate.I_gate.value
           else:
-            hamiY = np.kron(hamiY, PauliGate.I_gate)
+            hamiY = np.kron(hamiY, PauliGate.I_gate.value)
 
       Y = Y + bn['value'][m]*hamiY
 
