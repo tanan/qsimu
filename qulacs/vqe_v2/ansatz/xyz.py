@@ -1,6 +1,5 @@
 import sys
 import numpy as np
-from qcl.ansatz.pauli_gate import PauliGate
 from qulacs import QuantumCircuit
 from qulacs.gate import RZ
 
