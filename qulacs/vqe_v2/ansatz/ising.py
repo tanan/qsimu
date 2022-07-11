@@ -12,7 +12,7 @@ class IsingAnsatz(Ansatz):
   def __init__(self, nqubit, depth, gate_set, bn):
     super().__init__(nqubit, depth, gate_set, bn)
 
-  def create_hamiltonian(self, cn, bn):
+  def create_hamiltonian(self, cn, bn, gamma=None):
     XX= np.array(np.zeros(2**self.nqubit))
     Y= np.array(np.zeros(2**self.nqubit))
     for k in range(self.nqubit-1):

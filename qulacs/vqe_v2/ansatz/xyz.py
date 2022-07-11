@@ -13,7 +13,7 @@ class XYZAnsatz(Ansatz):
   def __init__(self, nqubit, depth, gate_set, bn):
     super().__init__(nqubit, depth, gate_set, bn)
 
-  def create_hamiltonian(self, cn, bn=None):
+  def create_hamiltonian(self, cn, bn=None, gamma=None):
     XX= np.array(np.zeros(2**self.nqubit))
     YY= np.array(np.zeros(2**self.nqubit))
     ZZ= np.array(np.zeros(2**self.nqubit))
