@@ -13,7 +13,7 @@ class Ansatz(metaclass=ABCMeta):
     self.diag, self.eigen_vecs = self.create_hamiltonian([1]*self.nqubit, bn)
 
   @abstractmethod
-  def create_hamiltonian(self, cn, bn=None):
+  def create_hamiltonian(self, cn, bn=None, gamma=None):
     pass
 
   def create_hamiltonian_gate(self, t):
