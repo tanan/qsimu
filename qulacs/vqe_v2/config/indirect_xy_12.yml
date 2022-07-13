@@ -3,9 +3,11 @@ nqubit: 7
 gate:
   type: "indirect_xy"
   parametric_rotation_gate_set: 4
-  min_time: -10
-  max_time: 10
   constraints: False
+  time:
+    type: "random"
+    min_val: 1
+    max_val: 1
   bn:
     # type: "static_random"
     # range: 1

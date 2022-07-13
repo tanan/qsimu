@@ -9,8 +9,8 @@ from ansatz.pauli_gate import PauliGate
 
 class XYAnsatz(Ansatz):
 
-  def __init__(self, nqubit, depth, gate_set, bn, gamma=0):
-    super().__init__(nqubit, depth, gate_set, bn, gamma)
+  def __init__(self, nqubit, depth, gate_set, time, bn, gamma=0):
+    super().__init__(nqubit, depth, gate_set, time, bn, gamma)
 
   def create_hamiltonian(self, cn, bn, gamma):
     XX= np.array(np.zeros(2**self.nqubit))
@@ -75,6 +75,9 @@ class XYAnsatz(Ansatz):
       elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
         circuit.add_gate(merge(RY(0, random_list[self.depth+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.gate_set*d)+1])))
         circuit.add_gate(merge(RY(1, random_list[self.depth+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.gate_set*d)+3])))
-        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+        if self.time['type'] == "random":
+          circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+        else:
+          circuit.add_gate(self.create_hamiltonian_gate(self.time['min_val']))
 
     return circuit

@@ -30,11 +30,11 @@ ansatz = None
 def init_ansatz():
   global config
   if config['gate']['type'] == 'indirect_xy':
-    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
+    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   elif config['gate']['type'] == 'indirect_xyz':
-    ansatz = XYZAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'])
+    ansatz = XYZAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'])
   elif config['gate']['type'] == 'indirect_ising':
-    ansatz = IsingAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
+    ansatz = IsingAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   else:
     ansatz = DirectAnsatz(config['nqubit'], config['depth'])
   return ansatz
@@ -140,7 +140,7 @@ def run():
       str(config['gate']['bn']['value']),
       str(config['gate']['cn']['value']),
       str(config['gate']['r']['value']),
-      config['gate']['max_time'],
+      config['gate']['time']['max_val'],
       str(cost_history[-1]),
       str(param_history[-1]),
       str(iter_history[-1]),

@@ -5,11 +5,12 @@ import numpy as np
 from qulacs.gate import DenseMatrix
 
 class Ansatz(metaclass=ABCMeta):
-  def __init__(self, nqubit, depth, gate_set=None, bn=None, gamma=None):
+  def __init__(self, nqubit, depth, gate_set=None, time=None, bn=None, gamma=None):
     self.nqubit = nqubit
     self.depth = depth
     self.gate_set = gate_set
     self.bn = bn
+    self.time = time
     self.diag, self.eigen_vecs = self.create_hamiltonian([1]*self.nqubit, bn, gamma)
 
   @abstractmethod
