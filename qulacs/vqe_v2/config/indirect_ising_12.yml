@@ -3,8 +3,8 @@ nqubit: 7
 gate:
   type: "indirect_ising"
   parametric_rotation_gate_set: 4
-  min_time: -10
-  max_time: 10
+  min_time: 1
+  max_time: 1
   constraints: False
   bn:
     # type: "static_random"

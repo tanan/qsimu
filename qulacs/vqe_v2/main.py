@@ -5,17 +5,16 @@ import time
 import datetime
 import numpy as np
 
-sys.path.append('..')
-from vqe_v2.ansatz.xy import XYAnsatz
-from vqe_v2.ansatz.xyz import XYZAnsatz
-from vqe_v2.ansatz.ising import IsingAnsatz
-from vqe_v2.ansatz.direct import DirectAnsatz
-from vqe_v2.random_list import randomize
-from vqe_v2.hamiltonian import create_ising_hamiltonian
-from vqe_v2.constraints import create_time_constraints
-from vqe_v2.output import to_string, output
-from vqe_v2.job import Job
-from vqe_v2.dbclient import DBClient
+from ansatz.xy import XYAnsatz
+from ansatz.xyz import XYZAnsatz
+from ansatz.ising import IsingAnsatz
+from ansatz.direct import DirectAnsatz
+from random_list import randomize
+from hamiltonian import create_ising_hamiltonian
+from constraints import create_time_constraints
+from output import to_string, output
+from job import Job
+from dbclient import DBClient
 from qulacs import QuantumState, QuantumCircuit
 from scipy.optimize import minimize
 
