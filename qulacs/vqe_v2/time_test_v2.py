@@ -94,6 +94,7 @@ def run():
   for k in np.arange(-20.0, 20.0, 0.1, dtype=float):
     record(np.append(np.append(init_random_list[0], k), init_random_list[2:]))
 
+  print(cost_history)
   ## calculation
   # options = { 'maxiter' : 1000 }
   # if config['gate']['constraints']:
@@ -111,7 +112,7 @@ def run():
   #                 callback=record)
 
   # end_time = time.perf_counter()
-  output(param_history, cost_history, iter_history)
+  # output(param_history, cost_history, iter_history)
   # np.savetxt('data/xy_params.txt', param_history[-1])
 
 if __name__ == '__main__':
