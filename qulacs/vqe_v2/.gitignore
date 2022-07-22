@@ -1,3 +1,4 @@
 *.sqlite3
 data/backup/*.sql
-data/xy_params.txt
+data/*.txt
+*.log

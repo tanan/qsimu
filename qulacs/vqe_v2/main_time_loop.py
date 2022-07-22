@@ -159,9 +159,12 @@ if __name__ == '__main__':
     config = yaml.safe_load(f)
     # non bn model
     if config['gate']['type'] == ['direct', 'indirect_xyz'] or config['gate']['bn']['type'] == 'static':
-      for k in range(10):
-        run()
-        reset()
+      for i in range(10, 20):
+        config['gate']['time']['min_val'] = i/10
+        config['gate']['time']['max_val'] = i/10
+        for k in range(10):
+          run()
+          reset()
     else:
       for k in range(100):
         config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)

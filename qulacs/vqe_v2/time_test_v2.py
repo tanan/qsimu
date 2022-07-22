@@ -29,7 +29,7 @@ ansatz = None
 def init_ansatz():
   global config
   if config['gate']['type'] == 'indirect_xy':
-    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
+    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   elif config['gate']['type'] == 'indirect_xyz':
     ansatz = XYZAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'])
   elif config['gate']['type'] == 'indirect_ising':
@@ -87,12 +87,14 @@ def run():
   init_random_list, bounds = randomize(config['nqubit'], config)
   
   ## temp
-  init_random_list = np.loadtxt('data/xy_params.txt')
+  init_random_list = np.loadtxt('data/xy_params_copy.txt')
   print(init_random_list)
 
   record(init_random_list)
   for k in np.arange(-20.0, 20.0, 0.1, dtype=float):
-    record(np.append(np.append(init_random_list[0], k), init_random_list[2:]))
+    # record(np.append(np.append(init_random_list[0], k), init_random_list[2:]))
+    record(np.append(np.append(init_random_list[0:12], k), init_random_list[13:]))
+    # record(np.append(k, init_random_list[1:]))
 
   print(cost_history)
   ## calculation
