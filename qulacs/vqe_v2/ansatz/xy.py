@@ -71,15 +71,18 @@ class XYAnsatz(Ansatz):
       if self.bn['type'] == "random":
         circuit.add_gate(merge(RY(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
         circuit.add_gate(merge(RY(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
-        circuit.add_gate(self.create_hamiltonian_gate([1]*self.nqubit, 0, random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
+        ## bnがrandomの場合、事前に対角化した値は利用できないため、再計算
+        self.diag, self.eigen_vecs = self.create_hamiltonian([1]*self.nqubit, random_list[d+self.depth:d+self.depth+self.nqubit], 0)
+        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
       elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
         if self.time['type'] == "random":
           circuit.add_gate(merge(RY(0, random_list[self.depth+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, random_list[self.depth+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.gate_set*d)+3])))
           circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
         else:
+          ## timeがstaticの場合、事前に設定したtimeの配列要素から取得
           circuit.add_gate(merge(RY(0, random_list[(self.gate_set*d)]), RZ(0, random_list[(self.gate_set*d)+1])))
           circuit.add_gate(merge(RY(1, random_list[(self.gate_set*d)+2]), RZ(1, random_list[(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate(self.time['min_val']))
+          circuit.add_gate(self.create_hamiltonian_gate(self.time['value'][d]))
 
     return circuit

@@ -25,7 +25,7 @@ def randomize(nqubit, config):
   ## init time
   init_random_list = np.array([])
   if config['gate']['time']['type'] == 'random':
-    init_random_list = generate_random_time(config['gate']['time']['max_val'], config['gate']['time']['max_val'], config['depth'])
+    init_random_list = generate_random_time(config['gate']['time']['min_val'], config['gate']['time']['max_val'], config['depth'])
 
   ## init bn if type is random
   if config['gate']['bn']['type'] == 'random' and config['gate']['type'] not in ['indirect_xyz', 'direct']:
