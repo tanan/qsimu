@@ -112,18 +112,21 @@ def run(config):
   # output(param_history, cost_history, iter_history)
   # np.savetxt('data/xy_params.txt', param_history[-1])
 
+def start(config):
+  reset()
+  run(config)
+
 if __name__ == '__main__':
   args = sys.argv
   path = args[1]
+  iter_for_static = 10
+  iter_for_random = 100
   with open(path, 'r') as f:
     config = yaml.safe_load(f)
-    # non bn model
     if config['gate']['type'] == ['direct', 'indirect_xyz'] or config['gate']['bn']['type'] == 'static':
-      for k in range(10):
-        run()
-        reset()
+      for k in range(iter_for_static):
+        start(config)
     else:
-      for k in range(100):
+      for k in range(iter_for_random):
         config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)
-        run(config)
-        reset()
+        start(config)
