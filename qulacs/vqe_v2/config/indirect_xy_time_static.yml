@@ -7,8 +7,6 @@ gate:
   time:
     type: "static"
     # value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
-    min_val: 2
-    max_val: 2
   bn:
     # type: "static_random"
     # range: 1
