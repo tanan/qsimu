@@ -1,8 +1,8 @@
 import numpy as np
 from dbclient import DBClient
 
-cost_num = 13
-iter_num = 15
+cost_num = 16
+iter_num = 18
 
 def getResult(nqubit, depth, method, bn_type=None, bn_range=None, bn_value=None):
   ## init numpy array
