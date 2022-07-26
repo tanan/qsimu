@@ -9,10 +9,11 @@ from ansatz.xy import XYAnsatz
 from ansatz.xyz import XYZAnsatz
 from ansatz.ising import IsingAnsatz
 from ansatz.direct import DirectAnsatz
+from job_factory import JobFactory
 from random_list import randomize
 from hamiltonian import create_ising_hamiltonian
 from constraints import create_time_constraints
-from output import to_string, output
+from utils import to_string, output
 from job import Job
 from dbclient import DBClient
 from qulacs import QuantumState, QuantumCircuit
@@ -27,8 +28,7 @@ iter_history = []
 iteration = 0
 ansatz = None
 
-def init_ansatz():
-  global config
+def init_ansatz(config):
   if config['gate']['type'] == 'indirect_xy':
     ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   elif config['gate']['type'] == 'indirect_xyz':
@@ -70,8 +70,7 @@ def reset():
   iter_history = []
   iteration = 0
 
-def run():
-  global config
+def run(config):
   ## performance measurement
   start_time = time.perf_counter()
   now = datetime.datetime.now()
@@ -82,7 +81,7 @@ def run():
 
   ## init ansatz instance
   global ansatz
-  ansatz = init_ansatz()
+  ansatz = init_ansatz(config)
 
   ## randomize and create constraints
   init_random_list, bounds = randomize(config['nqubit'], config)
@@ -105,52 +104,13 @@ def run():
                   callback=record)
 
   end_time = time.perf_counter()
-  output(param_history, cost_history, iter_history)
-  if config['gate']['type'] == 'direct':
-    job = Job(
-      now,
-      end_time - start_time,
-      config['nqubit'],
-      config['depth'],
-      config['gate']['type'],
-      None,
-      None,
-      None,
-      None,
-      None,
-      None,
-      None,
-      str(cost_history[-1]),
-      str(param_history[-1]),
-      str(iter_history[-1]),
-      str(cost_history),
-      to_string(param_history),
-      str(iter_history)
-    )
-  else:
-    job = Job(
-      now,
-      end_time - start_time,
-      config['nqubit'],
-      config['depth'],
-      config['gate']['type'],
-      str(config['gate']['parametric_rotation_gate_set']),
-      str(config['gate']['bn']['type']),
-      config['gate']['bn']['range'] if 'range' in config['gate']['bn'] else None,
-      str(config['gate']['bn']['value']),
-      str(config['gate']['cn']['value']),
-      str(config['gate']['r']['value']),
-      config['gate']['time']['max_val'],
-      str(cost_history[-1]),
-      str(param_history[-1]),
-      str(iter_history[-1]),
-      str(cost_history),
-      to_string(param_history),
-      str(iter_history)
-    )
+
+  ## record to database
+  job = JobFactory(config).create(now, start_time, end_time, cost_history, param_history, iter_history)
   client = DBClient("data/job_results.sqlite3")
   client.insertJob(job)
-  np.savetxt('data/xy_params.txt', param_history[-1])
+  # output(param_history, cost_history, iter_history)
+  # np.savetxt('data/xy_params.txt', param_history[-1])
 
 if __name__ == '__main__':
   args = sys.argv
@@ -165,5 +125,5 @@ if __name__ == '__main__':
     else:
       for k in range(100):
         config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)
-        run()
+        run(config)
         reset()
