@@ -1,6 +1,5 @@
 import sys
 import numpy as np
-from qcl.ansatz.pauli_gate import PauliGate
 from qulacs import QuantumCircuit
 from qulacs.gate import RZ
 
@@ -10,10 +9,10 @@ from ansatz.pauli_gate import PauliGate
 
 class XYZAnsatz(Ansatz):
 
-  def __init__(self, nqubit, depth, gate_set, bn):
-    super().__init__(nqubit, depth, gate_set, bn)
+  def __init__(self, nqubit, depth, gate_set, time, bn):
+    super().__init__(nqubit, depth, gate_set, time, bn)
 
-  def create_hamiltonian(self, cn, bn=None):
+  def create_hamiltonian(self, cn, bn=None, gamma=None):
     XX= np.array(np.zeros(2**self.nqubit))
     YY= np.array(np.zeros(2**self.nqubit))
     ZZ= np.array(np.zeros(2**self.nqubit))
@@ -21,27 +20,27 @@ class XYZAnsatz(Ansatz):
         for l in range(self.nqubit):
             if k==l:
                 if l==0:
-                    hamiX = PauliGate.X_gate
-                    hamiY = PauliGate.Y_gate
-                    hamiZ = PauliGate.Z_gate
+                    hamiX = PauliGate.X_gate.value
+                    hamiY = PauliGate.Y_gate.value
+                    hamiZ = PauliGate.Z_gate.value
                 else:
-                    hamiX = np.kron(hamiX,PauliGate.X_gate)
-                    hamiY = np.kron(hamiY,PauliGate.Y_gate)
-                    hamiZ = np.kron(hamiZ,PauliGate.Z_gate)
+                    hamiX = np.kron(hamiX,PauliGate.X_gate.value)
+                    hamiY = np.kron(hamiY,PauliGate.Y_gate.value)
+                    hamiZ = np.kron(hamiZ,PauliGate.Z_gate.value)
 
             elif k+1==l:
-                hamiX = np.kron(hamiX,PauliGate.X_gate)
-                hamiY = np.kron(hamiY,PauliGate.Y_gate)
-                hamiZ = np.kron(hamiZ,PauliGate.Z_gate)
+                hamiX = np.kron(hamiX,PauliGate.X_gate.value)
+                hamiY = np.kron(hamiY,PauliGate.Y_gate.value)
+                hamiZ = np.kron(hamiZ,PauliGate.Z_gate.value)
             else:
                 if l==0:
-                    hamiX = PauliGate.I_gate
-                    hamiY = PauliGate.I_gate
-                    hamiZ = PauliGate.I_gate
+                    hamiX = PauliGate.I_gate.value
+                    hamiY = PauliGate.I_gate.value
+                    hamiZ = PauliGate.I_gate.value
                 else:
-                    hamiX = np.kron(hamiX,PauliGate.I_gate)
-                    hamiY = np.kron(hamiY,PauliGate.I_gate)
-                    hamiZ = np.kron(hamiZ,PauliGate.I_gate)
+                    hamiX = np.kron(hamiX,PauliGate.I_gate.value)
+                    hamiY = np.kron(hamiY,PauliGate.I_gate.value)
+                    hamiZ = np.kron(hamiZ,PauliGate.I_gate.value)
         XX = XX+ 0.5*cn[k]*hamiX
         YY = YY+ 0.5*cn[k]*hamiY
         ZZ = ZZ+ 0.5*cn[k]*hamiZ
@@ -63,8 +62,13 @@ class XYZAnsatz(Ansatz):
         circuit.add_gate(RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1]))
         circuit.add_gate(self.create_hamiltonian_gate(random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
       elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
-        circuit.add_gate(RZ(0, random_list[self.depth+(self.gate_set*d)]))
-        circuit.add_gate(RZ(1, random_list[self.depth+(self.gate_set*d)+1]))
-        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+        if self.time['type'] == "random":
+          circuit.add_gate(RZ(0, random_list[self.depth+(self.gate_set*d)]))
+          circuit.add_gate(RZ(1, random_list[self.depth+(self.gate_set*d)+1]))
+          circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+        else:
+          circuit.add_gate(RZ(0, random_list[(self.gate_set*d)]))
+          circuit.add_gate(RZ(1, random_list[(self.gate_set*d)+1]))
+          circuit.add_gate(self.create_hamiltonian_gate(self.time['min_val']))
 
     return circuit

@@ -9,42 +9,42 @@ from ansatz.pauli_gate import PauliGate
 
 class IsingAnsatz(Ansatz):
 
-  def __init__(self, nqubit, depth, gate_set, bn):
-    super().__init__(nqubit, depth, gate_set, bn)
+  def __init__(self, nqubit, depth, gate_set, time, bn):
+    super().__init__(nqubit, depth, gate_set, time, bn)
 
-  def create_hamiltonian(self, cn, bn):
+  def create_hamiltonian(self, cn, bn, gamma=None):
     XX= np.array(np.zeros(2**self.nqubit))
     Y= np.array(np.zeros(2**self.nqubit))
     for k in range(self.nqubit-1):
         for l in range(self.nqubit):
             if k==l:
                 if l==0:
-                    hamiX = PauliGate.X_gate
+                    hamiX = PauliGate.X_gate.value
                 else:
-                    hamiX = np.kron(hamiX, PauliGate.X_gate)
+                    hamiX = np.kron(hamiX, PauliGate.X_gate.value)
 
             elif k+1==l:
-                hamiX = np.kron(hamiX, PauliGate.X_gate)
+                hamiX = np.kron(hamiX, PauliGate.X_gate.value)
             else:
                 if l==0:
-                    hamiX = PauliGate.I_gate
+                    hamiX = PauliGate.I_gate.value
                 else:
-                    hamiX = np.kron(hamiX, PauliGate.I_gate)
+                    hamiX = np.kron(hamiX, PauliGate.I_gate.value)
         XX = XX+ 0.5*cn[k]*hamiX
 
     for m in range(self.nqubit):
       for n in range(self.nqubit):
         if m==n:
           if n==0:
-            hamiY = PauliGate.Y_gate
+            hamiY = PauliGate.Y_gate.value
           else:
-            hamiY = np.kron(hamiY, PauliGate.Y_gate)
+            hamiY = np.kron(hamiY, PauliGate.Y_gate.value)
         
         else:
           if n==0:
-            hamiY = PauliGate.I_gate
+            hamiY = PauliGate.I_gate.value
           else:
-            hamiY = np.kron(hamiY, PauliGate.I_gate)
+            hamiY = np.kron(hamiY, PauliGate.I_gate.value)
 
       Y = Y + bn['value'][m]*hamiY
 
@@ -65,8 +65,13 @@ class IsingAnsatz(Ansatz):
         circuit.add_gate(RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1]))
         circuit.add_gate(self.create_hamiltonian_gate(random_list[d+self.depth:d+self.depth+self.nqubit], random_list[d]))
       elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
-        circuit.add_gate(RZ(0, random_list[self.depth+(self.gate_set*d)]))
-        circuit.add_gate(RZ(1, random_list[self.depth+(self.gate_set*d)+1]))
-        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+        if self.time['type'] == "random":
+          circuit.add_gate(RZ(0, random_list[self.depth+(self.gate_set*d)]))
+          circuit.add_gate(RZ(1, random_list[self.depth+(self.gate_set*d)+1]))
+          circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+        else:
+          circuit.add_gate(RZ(0, random_list[(self.gate_set*d)]))
+          circuit.add_gate(RZ(1, random_list[(self.gate_set*d)+1]))
+          circuit.add_gate(self.create_hamiltonian_gate(self.time['min_val']))
 
     return circuit

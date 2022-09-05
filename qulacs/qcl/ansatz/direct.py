@@ -5,7 +5,6 @@ from qulacs.gate import CZ, RY, RZ, merge
 
 sys.path.append('..')
 from ansatz.ansatz import Ansatz
-from hamiltonian import create_hamiltonian_gate
 
 class DirectAnsatz(Ansatz):
   def __init__(self, nqubit, depth, gate_set):
@@ -16,9 +15,14 @@ class DirectAnsatz(Ansatz):
 
   def create_ansatz(self, random_list):
     circuit = QuantumCircuit(self.nqubit)
-    circuit.add_gate(create_hamiltonian_gate(self.nqubit, 0.77))
-    for d in range(self.nqubit):
-      circuit.add_RX_gate(d, random_list[(self.gate_set*d)])
-      circuit.add_RZ_gate(d, random_list[(self.gate_set*d)+1])
-      circuit.add_RX_gate(d, random_list[(self.gate_set*d)+2])
+    for d in range(self.depth):
+      for i in range(self.nqubit):
+        circuit.add_gate(merge(RY(i, random_list[2*i+2*self.nqubit*d]), RZ(i, random_list[2*i+1+2*self.nqubit*d])))
+      for i in range(self.nqubit//2):
+        circuit.add_gate(CZ(2*i, 2*i+1))
+      for i in range(self.nqubit//2-1):
+        circuit.add_gate(CZ(2*i+1, 2*i+2))
+    for i in range(self.nqubit):
+      circuit.add_gate(merge(RY(i, random_list[2*i+2*self.nqubit*self.depth]), RZ(i, random_list[2*i+1+2*self.nqubit*self.depth])))
+
     return circuit
