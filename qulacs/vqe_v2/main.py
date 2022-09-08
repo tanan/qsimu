@@ -97,6 +97,12 @@ def run(config):
                   bounds=bounds,
                   options=options,
                   callback=record)
+  elif config['gate']['bounds']:
+    opt = minimize(cost, init_random_list,
+                  method="BFGS",
+                  options=options,
+                  bounds=bounds,
+                  callback=record)
   else:
     opt = minimize(cost, init_random_list,
                   method="BFGS",
