@@ -87,7 +87,7 @@ def create_ansatz(config):
     config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)
   
   if config['gate']['type'] == 'indirect_xy':
-    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['bn'])
+    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   elif config['gate']['type'] == 'direct':
     ansatz = DirectAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'])
   return ansatz
