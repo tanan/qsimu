@@ -99,7 +99,7 @@ def run(config):
                   callback=record)
   elif config['gate']['bounds']:
     opt = minimize(cost, init_random_list,
-                  method="BFGS",
+                  method="SLSQP",
                   options=options,
                   bounds=bounds,
                   callback=record)
