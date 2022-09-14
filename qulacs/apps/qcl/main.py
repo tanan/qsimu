@@ -11,8 +11,6 @@ from common.ansatz.direct import DirectAnsatz
 from common.random_list import randomize
 
 ########  パラメータ  #############
-nqubit = 3 ## qubitの数
-c_depth = 3 ## circuitの深さ
 time_step = 0.77  ## ランダムハミルトニアンによる時間発展の経過時間
 
 ## init variables
@@ -100,7 +98,6 @@ def record(x):
   global cost_history
   param_history.append(x)
   cost_history.append(cost(x))
-  print(x)
   print(cost(x))
 
 if __name__ == '__main__':

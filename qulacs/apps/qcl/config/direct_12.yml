@@ -4,6 +4,7 @@ gate:
   type: "direct"
   parametric_rotation_gate_set: 3
   constraints: ""
+  bounds: False
   bn:
     type: "static"
   cn:
