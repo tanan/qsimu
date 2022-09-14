@@ -40,9 +40,11 @@ def U_in(x):
   U = QuantumCircuit(config['nqubit'])
   angle_y = np.arcsin(x)
   angle_z = np.arccos(x**2)
-  for i in range(config['nqubit']):
+  # for i in range(config['nqubit']):
+  for i in range(0,1):
     U.add_RY_gate(i, angle_y)
     U.add_RZ_gate(i, angle_z)
+    # 時間発展
 
   return U
 

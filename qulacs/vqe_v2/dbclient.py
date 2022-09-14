@@ -49,6 +49,13 @@ class DBClient:
     jobs = cur.fetchall()
     return jobs
 
+  def findJobByTime(self, nqubit, depth, gate_type, t_type, t_min, t_max):
+    cur = self.conn.cursor()
+    sql = Path('sql/find_job_by_time.sql').read_text()
+    cur.execute(sql, (nqubit, depth, gate_type, t_type, t_min, t_max))
+    jobs = cur.fetchall()
+    return jobs
+
   def findJob(self, nqubit, depth, gate_type, bn_type=None, bn_range=None, bn_value=None):
     cur = self.conn.cursor()
     if bn_type == 'static':
