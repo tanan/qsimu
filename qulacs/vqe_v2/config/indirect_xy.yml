@@ -1,4 +1,4 @@
-depth: 16
+depth: 24
 nqubit: 7
 gate:
   type: "indirect_xy"
@@ -8,7 +8,7 @@ gate:
   time:
     type: "random"
     min_val: 0
-    max_val: 1
+    max_val: 3
   bn:
     # type: "static_random"
     # range: 1

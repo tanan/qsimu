@@ -32,7 +32,7 @@ def randomize(nqubit, config):
     init_random_list = np.append(init_random_list, generate_random_bn(-1.0, 1.0, config['depth']*nqubit))
 
   init_random_list = np.append(init_random_list, np.random.random(config['gate']['parametric_rotation_gate_set']*config['depth'])*1e-1)
-  if config['gate']['constraints']:
+  if config['gate']['bounds']:
     return init_random_list, get_bounds(nqubit, config)
   
   return init_random_list, None
