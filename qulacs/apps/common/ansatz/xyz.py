@@ -3,52 +3,48 @@ import numpy as np
 from qulacs import QuantumCircuit
 from qulacs.gate import RZ
 
-sys.path.append('..')
-from ansatz.ansatz import Ansatz
-from ansatz.pauli_gate import PauliGate
+from .ansatz import Ansatz
+from .pauli_gate import PauliGate
 
-class IsingAnsatz(Ansatz):
+class XYZAnsatz(Ansatz):
 
   def __init__(self, nqubit, depth, gate_set, time, bn):
     super().__init__(nqubit, depth, gate_set, time, bn)
 
-  def create_hamiltonian(self, cn, bn, gamma=None):
+  def create_hamiltonian(self, cn, bn=None, gamma=None):
     XX= np.array(np.zeros(2**self.nqubit))
-    Y= np.array(np.zeros(2**self.nqubit))
+    YY= np.array(np.zeros(2**self.nqubit))
+    ZZ= np.array(np.zeros(2**self.nqubit))
     for k in range(self.nqubit-1):
         for l in range(self.nqubit):
             if k==l:
                 if l==0:
                     hamiX = PauliGate.X_gate.value
+                    hamiY = PauliGate.Y_gate.value
+                    hamiZ = PauliGate.Z_gate.value
                 else:
-                    hamiX = np.kron(hamiX, PauliGate.X_gate.value)
+                    hamiX = np.kron(hamiX,PauliGate.X_gate.value)
+                    hamiY = np.kron(hamiY,PauliGate.Y_gate.value)
+                    hamiZ = np.kron(hamiZ,PauliGate.Z_gate.value)
 
             elif k+1==l:
-                hamiX = np.kron(hamiX, PauliGate.X_gate.value)
+                hamiX = np.kron(hamiX,PauliGate.X_gate.value)
+                hamiY = np.kron(hamiY,PauliGate.Y_gate.value)
+                hamiZ = np.kron(hamiZ,PauliGate.Z_gate.value)
             else:
                 if l==0:
                     hamiX = PauliGate.I_gate.value
+                    hamiY = PauliGate.I_gate.value
+                    hamiZ = PauliGate.I_gate.value
                 else:
-                    hamiX = np.kron(hamiX, PauliGate.I_gate.value)
+                    hamiX = np.kron(hamiX,PauliGate.I_gate.value)
+                    hamiY = np.kron(hamiY,PauliGate.I_gate.value)
+                    hamiZ = np.kron(hamiZ,PauliGate.I_gate.value)
         XX = XX+ 0.5*cn[k]*hamiX
+        YY = YY+ 0.5*cn[k]*hamiY
+        ZZ = ZZ+ 0.5*cn[k]*hamiZ
 
-    for m in range(self.nqubit):
-      for n in range(self.nqubit):
-        if m==n:
-          if n==0:
-            hamiY = PauliGate.Y_gate.value
-          else:
-            hamiY = np.kron(hamiY, PauliGate.Y_gate.value)
-        
-        else:
-          if n==0:
-            hamiY = PauliGate.I_gate.value
-          else:
-            hamiY = np.kron(hamiY, PauliGate.I_gate.value)
-
-      Y = Y + bn['value'][m]*hamiY
-
-    hamiltonian = XX + Y
+    hamiltonian = XX + YY + ZZ
     return np.linalg.eigh(hamiltonian)
 
   def create_ansatz(self, random_list):

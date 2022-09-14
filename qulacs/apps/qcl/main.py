@@ -6,9 +6,9 @@ from scipy.optimize import minimize
 from qulacs import QuantumState, QuantumCircuit, Observable
 
 sys.path.append('..')
-from qcl.ansatz.xy import XYAnsatz
-from qcl.ansatz.direct import DirectAnsatz
-from qcl.random_list import randomize
+from common.ansatz.xy import XYAnsatz
+from common.ansatz.direct import DirectAnsatz
+from common.random_list import randomize
 
 ########  パラメータ  #############
 nqubit = 3 ## qubitの数
@@ -17,8 +17,8 @@ time_step = 0.77  ## ランダムハミルトニアンによる時間発展の�
 
 ## init variables
 config = None
-# param_history = []
-# cost_history = []
+param_history = []
+cost_history = []
 # iter_history = []
 # iteration = 0
 ansatz = None
@@ -36,25 +36,25 @@ def create_train_data(x_min, x_max, num_x_train=50, mag_noise=0.05):
   return x_train, y_train
 
 # The gate for encoding x
-def U_in(x):
+def U_in(x, U_time):
   U = QuantumCircuit(config['nqubit'])
   angle_y = np.arcsin(x)
   angle_z = np.arccos(x**2)
-  # for i in range(config['nqubit']):
   for i in range(0,1):
     U.add_RY_gate(i, angle_y)
     U.add_RZ_gate(i, angle_z)
-    # 時間発展
+
+  U.add_gate(U_time)
 
   return U
 
-def qcl_pred(x, U_out):
+def qcl_pred(x, U_time, U_out):
   obs = Observable(config['nqubit'])
   obs.add_operator(2.,'Z 0')
   state = QuantumState(config['nqubit'])
   state.set_zero_state()
 
-  U_in(x).update_quantum_state(state)
+  U_in(x, U_time).update_quantum_state(state)
   U_out.update_quantum_state(state)
   res = obs.get_expectation_value(state)
 
@@ -65,24 +65,15 @@ def cost(random_list):
   global x_train
   global y_train
   global ansatz
+  global time_step
   state = QuantumState(config['nqubit'])
   state.set_zero_state()
 
   U_out = ansatz.create_ansatz(random_list)
 
-  y_pred = [qcl_pred(x, U_out) for x in x_train]
+  y_pred = [qcl_pred(x, ansatz.create_hamiltonian_gate(time_step), U_out) for x in x_train]
   L = ((y_pred - y_train)**2).mean()
   return L
-
-def create_graph(U_out, x_min, x_max, y_init, x_train, y_train):
-  plt.figure(figsize=(10, 6))
-  xlist = np.arange(x_min, x_max, 0.02)
-  plt.plot(x_train, y_train, "o", label='Teacher')
-  plt.plot(xlist, y_init, '--', label='Initial Model Prediction', c='gray')
-  y_pred = np.array([qcl_pred(x, U_out) for x in xlist])
-  plt.plot(xlist, y_pred, label='Final Model Prediction')
-  plt.legend()
-  plt.show()
 
 def create_ansatz(config):
   if config['gate']['bn']['type'] == "static_random":
@@ -93,6 +84,24 @@ def create_ansatz(config):
   elif config['gate']['type'] == 'direct':
     ansatz = DirectAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'])
   return ansatz
+
+def create_graph(U_time, U_out, x_min, x_max, y_init, x_train, y_train):
+  plt.figure(figsize=(10, 6))
+  xlist = np.arange(x_min, x_max, 0.02)
+  plt.plot(x_train, y_train, "o", label='Teacher')
+  plt.plot(xlist, y_init, '--', label='Initial Model Prediction', c='gray')
+  y_pred = np.array([qcl_pred(x, U_time, U_out) for x in xlist])
+  plt.plot(xlist, y_pred, label='Final Model Prediction')
+  plt.legend()
+  plt.show()
+
+def record(x):
+  global param_history
+  global cost_history
+  param_history.append(x)
+  cost_history.append(cost(x))
+  print(x)
+  print(cost(x))
 
 if __name__ == '__main__':
   args = sys.argv
@@ -111,15 +120,16 @@ if __name__ == '__main__':
     random_list, bounds = randomize(config['nqubit'], config)
 
     ## save init y
+    U_time = ansatz.create_hamiltonian_gate(time_step)
     U_out = ansatz.create_ansatz(random_list)
     xlist = np.arange(x_min, x_max, 0.02)
-    y_init = [qcl_pred(x, U_out) for x in xlist]
+    y_init = [qcl_pred(x, U_time, U_out) for x in xlist]
 
     # minimize
-    result = minimize(cost, random_list, method='Nelder-Mead')
+    result = minimize(cost, random_list, method='Nelder-Mead', callback=record)
     print(result)
 
     U_out = ansatz.create_ansatz(result.x)
-    create_graph(U_out, x_min, x_max, y_init, x_train, y_train)
+    create_graph(U_time, U_out, x_min, x_max, y_init, x_train, y_train)
 
 

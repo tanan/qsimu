@@ -4,7 +4,7 @@ from qulacs import QuantumCircuit
 from qulacs.gate import CZ, RY, RZ, merge
 
 sys.path.append('..')
-from ansatz.ansatz import Ansatz
+from .ansatz import Ansatz
 
 class DirectAnsatz(Ansatz):
   def __init__(self, nqubit, depth, gate_set):

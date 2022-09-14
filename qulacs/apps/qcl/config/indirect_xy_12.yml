@@ -1,10 +1,11 @@
-depth: 12
-nqubit: 6
+depth: 4
+nqubit: 3
 gate:
   type: "indirect_xy"
   parametric_rotation_gate_set: 4
   max_time: 10
   constraints: ""
+  bounds: False
   time:
     type: "random"
     min_val: -1

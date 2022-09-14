@@ -3,9 +3,8 @@ import numpy as np
 from qulacs import QuantumCircuit
 from qulacs.gate import CNOT, RY, RZ, merge
 
-sys.path.append('..')
-from ansatz.ansatz import Ansatz
-from ansatz.pauli_gate import PauliGate
+from .ansatz import Ansatz
+from .pauli_gate import PauliGate
 
 class XYAnsatz(Ansatz):
 
