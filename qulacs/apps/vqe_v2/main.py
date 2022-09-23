@@ -105,7 +105,7 @@ def run(config):
                   callback=record)
   else:
     opt = minimize(cost, init_random_list,
-                  method="BFGS",
+                  method="SLSQP",
                   options=options,
                   callback=record)
 

@@ -1,4 +1,4 @@
-depth: 24
+depth: 16
 nqubit: 7
 gate:
   type: "indirect_xy"
