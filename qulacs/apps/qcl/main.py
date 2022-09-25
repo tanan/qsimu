@@ -44,6 +44,12 @@ def U_in(x, U_time):
 
   U.add_gate(U_time)
 
+  for i in range(0,1):
+    U.add_RY_gate(i, angle_y)
+    U.add_RZ_gate(i, angle_z)
+
+  U.add_gate(U_time)
+
   return U
 
 def qcl_pred(x, U_time, U_out):
@@ -128,5 +134,3 @@ if __name__ == '__main__':
 
     U_out = ansatz.create_ansatz(result.x)
     create_graph(U_time, U_out, x_min, x_max, y_init, x_train, y_train)
-
-
