@@ -50,6 +50,12 @@ def U_in(x, U_time):
 
   U.add_gate(U_time)
 
+  for i in range(0,1):
+    U.add_RY_gate(i, angle_y)
+    U.add_RZ_gate(i, angle_z)
+
+  U.add_gate(U_time)
+
   return U
 
 def qcl_pred(x, U_time, U_out):
