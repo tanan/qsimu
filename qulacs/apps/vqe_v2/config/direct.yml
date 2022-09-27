@@ -1,0 +1,17 @@
+depth: 4
+nqubit: 3
+gate:
+  type: "direct"
+  parametric_rotation_gate_set: 3
+  constraints: ""
+  bounds: False
+  noise:
+    twoqubit:
+      enabled: True
+      value: 0.002
+  bn:
+    type: "static"
+  cn:
+    type: "static"
+  r:
+    type: "static"

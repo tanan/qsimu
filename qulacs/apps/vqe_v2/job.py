@@ -22,6 +22,8 @@ class Job:
         cost_history,
         parameter_history,
         iteration_history,
+        noise_twoqubit_enabled,
+        noise_twoqubit_value,
     ):
         self.creation_time = creation_time
         self.execution_second = execution_second
@@ -44,3 +46,5 @@ class Job:
         self.cost_history = cost_history
         self.parameter_history = parameter_history
         self.iteration_history = iteration_history
+        self.noise_twoqubit_enabled = noise_twoqubit_enabled
+        self.noise_twoqubit_value = noise_twoqubit_value

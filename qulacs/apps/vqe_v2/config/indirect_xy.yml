@@ -1,4 +1,4 @@
-depth: 12
+depth: 4
 nqubit: 3
 gate:
   type: "indirect_xy"
@@ -8,7 +8,7 @@ gate:
   noise:
     twoqubit:
       enabled: True
-      value: 0.1
+      value: 0.002
   time:
     type: "random"
     min_val: -3

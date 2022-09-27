@@ -39,6 +39,10 @@ class JobFactory:
                 str(cost_history),
                 to_string(param_history),
                 str(iter_history),
+                self.config["noise"]["twoqubit"]["enabled"],
+                self.config["noise"]["twoqubit"]["value"]
+                if "value" in self.config["noise"]["twoqubit"]
+                else None,
             )
         else:
             job = Job(
@@ -71,5 +75,9 @@ class JobFactory:
                 str(cost_history),
                 to_string(param_history),
                 str(iter_history),
+                self.config["noise"]["twoqubit"]["enabled"],
+                self.config["noise"]["twoqubit"]["value"]
+                if "value" in self.config["noise"]["twoqubit"]
+                else None,
             )
         return job

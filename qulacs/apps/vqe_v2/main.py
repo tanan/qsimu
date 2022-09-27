@@ -9,13 +9,11 @@ from job_factory import JobFactory
 from random_list import randomize
 from hamiltonian import create_ising_hamiltonian
 from constraints import create_time_constraints
-from utils import to_string, output
-from job import Job
 from dbclient import DBClient
 from qulacs import QuantumState, QuantumCircuit
 from scipy.optimize import minimize
 
-sys.path.append('..')
+sys.path.append("..")
 from common.ansatz.xy import XYAnsatz
 from common.ansatz.xyz import XYZAnsatz
 from common.ansatz.ising import IsingAnsatz

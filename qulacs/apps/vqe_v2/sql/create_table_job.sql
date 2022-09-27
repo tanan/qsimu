@@ -20,5 +20,7 @@ CREATE TABLE jobs(
   iteration TEXT,
   cost_history TEXT,
   parameter_history TEXT,
-  iteration_history TEXT
+  iteration_history TEXT,
+  noise_twoqubit_enabled TEXT,
+  noise_twoqubit_value TEXT
 )
