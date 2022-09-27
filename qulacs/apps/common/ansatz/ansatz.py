@@ -24,3 +24,6 @@ class Ansatz(metaclass=ABCMeta):
   @abstractmethod
   def create_ansatz(self, random_list):
     pass
+
+class ParametricGateCountError(Exception):
+  pass

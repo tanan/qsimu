@@ -1,9 +1,9 @@
 import sys
 import numpy as np
 from qulacs import QuantumCircuit
-from qulacs.gate import CNOT, RY, RZ, merge
+from qulacs.gate import CNOT, RY, RZ, merge, TwoQubitDepolarizingNoise
 
-from .ansatz import Ansatz
+from .ansatz import Ansatz, ParametricGateCountError
 from .pauli_gate import PauliGate
 
 class XYAnsatz(Ansatz):
@@ -67,21 +67,50 @@ class XYAnsatz(Ansatz):
     circuit = QuantumCircuit(self.nqubit)
     for d in range(self.depth):
       circuit.add_gate(CNOT(0, 1))
+      if self.noise.twoqubit.enabled:
+        circuit.add_gate(TwoQubitDepolarizingNoise(0, 1, self.noise.twoqubit.value))
+
       if self.bn['type'] == "random":
-        circuit.add_gate(merge(RY(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+1])))
-        circuit.add_gate(merge(RY(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+3])))
-        ## bnがrandomの場合、事前に対角化した値は利用できないため、再計算
-        self.diag, self.eigen_vecs = self.create_hamiltonian([1]*self.nqubit, random_list[d+self.depth:d+self.depth+self.nqubit], 0)
+        circuit = self.create_parametric_rotation_gate(
+          circuit,
+          random_list[self.depth+(self.depth*self.nqubit)+(self.gate_set*d):self.depth+(self.depth*self.nqubit)+(self.gate_set*d)+4],
+        )
+
+        ## When bn is random, recalculate daig and eigen_vecs so that the calculated values in advance can not use.
+        self.diag, self.eigen_vecs = self.create_hamiltonian(
+          [1]*self.nqubit,
+          random_list[d+self.depth:d+self.depth+self.nqubit],
+          self.gamma,
+        )
         circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
-      elif self.bn['type'] == "static" or self.bn['type'] == "static_random":
-        if self.time['type'] == "random":
-          circuit.add_gate(merge(RY(0, random_list[self.depth+(self.gate_set*d)]), RZ(0, random_list[self.depth+(self.gate_set*d)+1])))
-          circuit.add_gate(merge(RY(1, random_list[self.depth+(self.gate_set*d)+2]), RZ(1, random_list[self.depth+(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
-        else:
-          ## timeがstaticの場合、事前に設定したtimeの配列要素から取得
-          circuit.add_gate(merge(RY(0, random_list[(self.gate_set*d)]), RZ(0, random_list[(self.gate_set*d)+1])))
-          circuit.add_gate(merge(RY(1, random_list[(self.gate_set*d)+2]), RZ(1, random_list[(self.gate_set*d)+3])))
-          circuit.add_gate(self.create_hamiltonian_gate(self.time['value'][d]))
+
+      if self.time['type'] == "random":
+        circuit = self.create_parametric_rotation_gate(
+          circuit,
+          random_list[self.depth+(self.gate_set*d):self.depth+(self.gate_set*d)+4],
+        )
+
+        circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+      else:
+        circuit = self.create_parametric_rotation_gate(
+          circuit,
+          random_list[(self.gate_set*d):(self.gate_set*d)+4],
+        )
+
+        ## When time is static, get time from static array.
+        circuit.add_gate(self.create_hamiltonian_gate(self.time['value'][d]))
+
+    return circuit
+
+  def add_parametric_rotation_gate(self, circuit, params):
+    '''
+    add parametric rotation gate to current circuit
+    '''
+    if self.gate_set == 4:
+      circuit.add_gate(merge(RY(0, params[0]), RZ(0, params[1])))
+      circuit.add_gate(merge(RY(1, params[2]), RZ(1, params[3])))
+
+    else:
+      raise ParametricGateCountError('The number of parametric gates is invalid.')
 
     return circuit

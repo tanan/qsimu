@@ -5,6 +5,10 @@ gate:
   parametric_rotation_gate_set: 4
   constraints: False
   bounds: True
+  noise:
+    twoqubit:
+      enabled: True
+      value: 0.1
   time:
     type: "random"
     min_val: -3
