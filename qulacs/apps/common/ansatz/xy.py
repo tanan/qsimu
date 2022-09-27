@@ -8,8 +8,8 @@ from .pauli_gate import PauliGate
 
 
 class XYAnsatz(Ansatz):
-    def __init__(self, nqubit, depth, gate_set, time, bn, gamma=0):
-        super().__init__(nqubit, depth, gate_set, time, bn, gamma)
+    def __init__(self, nqubit, depth, noise, gate_set, time, bn, gamma=0):
+        super().__init__(nqubit, depth, noise, ate_set, time, bn, gamma)
 
     def create_hamiltonian(self, cn, bn, gamma):
         XX = np.array(np.zeros(2**self.nqubit))

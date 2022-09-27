@@ -1,15 +1,15 @@
 import sys
 import numpy as np
 from qulacs import QuantumCircuit
-from qulacs.gate import CZ, RY, RZ, merge
+from qulacs.gate import CZ, RY, RZ, merge, TwoQubitDepolarizingNoise
 
 sys.path.append("..")
 from .ansatz import Ansatz
 
 
 class DirectAnsatz(Ansatz):
-    def __init__(self, nqubit, depth, gate_set):
-        super().__init__(nqubit, depth, gate_set)
+    def __init__(self, nqubit, depth, noise, gate_set):
+        super().__init__(nqubit, depth, noise, gate_set)
 
     def create_hamiltonian(self, cn=None, bn=None):
         return None, None
@@ -25,9 +25,9 @@ class DirectAnsatz(Ansatz):
                     )
                 )
             for i in range(self.nqubit // 2):
-                circuit.add_gate(CZ(2 * i, 2 * i + 1))
+                circuit = self.add_cz_gate(circuit, 2 * i, 2 * i + 1)
             for i in range(self.nqubit // 2 - 1):
-                circuit.add_gate(CZ(2 * i + 1, 2 * i + 2))
+                circuit = self.add_cz_gate(circuit, 2 * i + 1, 2 * i + 2)
         for i in range(self.nqubit):
             circuit.add_gate(
                 merge(
@@ -36,4 +36,15 @@ class DirectAnsatz(Ansatz):
                 )
             )
 
+        return circuit
+
+    def add_cz_gate(self, circuit, control_qubit, target_qubit):
+        circuit.add_gate(CZ(control_qubit, target_qubit))
+
+        if self.noise.twoqubit.enabled:
+            circuit.add_gate(
+                TwoQubitDepolarizingNoise(
+                    control_qubit, target_qubit, self.noise.twoqubit.value
+                )
+            )
         return circuit
