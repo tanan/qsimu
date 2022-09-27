@@ -8,10 +8,10 @@ from .ansatz import Ansatz
 
 
 class DirectAnsatz(Ansatz):
-    def __init__(self, nqubit, depth, noise, gate_set):
+    def __init__(self, nqubit, depth, noise, gate_set=None):
         super().__init__(nqubit, depth, noise, gate_set)
 
-    def create_hamiltonian(self, cn=None, bn=None):
+    def create_hamiltonian(self, cn=None, bn=None, gamma=None):
         return None, None
 
     def create_ansatz(self, random_list):
