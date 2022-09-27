@@ -9,7 +9,7 @@ from .pauli_gate import PauliGate
 
 class XYAnsatz(Ansatz):
     def __init__(self, nqubit, depth, noise, gate_set, time, bn, gamma=0):
-        super().__init__(nqubit, depth, noise, ate_set, time, bn, gamma)
+        super().__init__(nqubit, depth, noise, gate_set, time, bn, gamma)
 
     def create_hamiltonian(self, cn, bn, gamma):
         XX = np.array(np.zeros(2**self.nqubit))
@@ -67,13 +67,13 @@ class XYAnsatz(Ansatz):
         circuit = QuantumCircuit(self.nqubit)
         for d in range(self.depth):
             circuit.add_gate(CNOT(0, 1))
-            if self.noise.twoqubit.enabled:
+            if self.noise['twoqubit']['enabled']:
                 circuit.add_gate(
-                    TwoQubitDepolarizingNoise(0, 1, self.noise.twoqubit.value)
+                    TwoQubitDepolarizingNoise(0, 1, self.noise['twoqubit']['value'])
                 )
 
             if self.bn["type"] == "random":
-                circuit = self.create_parametric_rotation_gate(
+                circuit = self.add_parametric_rotation_gate(
                     circuit,
                     random_list[
                         self.depth
@@ -94,7 +94,7 @@ class XYAnsatz(Ansatz):
                 circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
 
             if self.time["type"] == "random":
-                circuit = self.create_parametric_rotation_gate(
+                circuit = self.add_parametric_rotation_gate(
                     circuit,
                     random_list[
                         self.depth
@@ -106,7 +106,7 @@ class XYAnsatz(Ansatz):
 
                 circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
             else:
-                circuit = self.create_parametric_rotation_gate(
+                circuit = self.add_parametric_rotation_gate(
                     circuit,
                     random_list[(self.gate_set * d) : (self.gate_set * d) + 4],
                 )
