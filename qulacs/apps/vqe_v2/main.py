@@ -30,13 +30,13 @@ ansatz = None
 
 def init_ansatz(config):
   if config['gate']['type'] == 'indirect_xy':
-    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
+    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['noise'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   elif config['gate']['type'] == 'indirect_xyz':
-    ansatz = XYZAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'])
+    ansatz = XYZAnsatz(config['nqubit'], config['depth'], config['gate']['noise'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'])
   elif config['gate']['type'] == 'indirect_ising':
-    ansatz = IsingAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
+    ansatz = IsingAnsatz(config['nqubit'], config['depth'], config['gate']['noise'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
   else:
-    ansatz = DirectAnsatz(config['nqubit'], config['depth'])
+    ansatz = DirectAnsatz(config['nqubit'], config['depth'], config['gate']['noise'])
   return ansatz
 
 def cost(random_list):
