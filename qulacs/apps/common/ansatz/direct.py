@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from qulacs import QuantumCircuit
-from qulacs.gate import CZ, RY, RZ, merge, TwoQubitDepolarizingNoise
+from qulacs.gate import CZ, RY, RZ, merge, DepolarizingNoise, TwoQubitDepolarizingNoise
 
 sys.path.append("..")
 from .ansatz import Ansatz
@@ -24,6 +24,10 @@ class DirectAnsatz(Ansatz):
                         RZ(i, random_list[2 * i + 1 + 2 * self.nqubit * d]),
                     )
                 )
+                if self.noise["singlequbit"]["enabled"]:
+                    circuit.add_gate(
+                        DepolarizingNoise(i, self.noise["singlequbit"]["value"])
+                    )
             for i in range(self.nqubit // 2):
                 circuit = self.add_cz_gate(circuit, 2 * i, 2 * i + 1)
             for i in range(self.nqubit // 2 - 1):
@@ -41,10 +45,10 @@ class DirectAnsatz(Ansatz):
     def add_cz_gate(self, circuit, control_qubit, target_qubit):
         circuit.add_gate(CZ(control_qubit, target_qubit))
 
-        if self.noise['twoqubit']['enabled']:
+        if self.noise["twoqubit"]["enabled"]:
             circuit.add_gate(
                 TwoQubitDepolarizingNoise(
-                    control_qubit, target_qubit, self.noise['twoqubit']['value']
+                    control_qubit, target_qubit, self.noise["twoqubit"]["value"]
                 )
             )
         return circuit

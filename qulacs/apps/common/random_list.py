@@ -23,8 +23,9 @@ def randomize(nqubit, config):
     """
     if config["gate"]["type"] == "direct":
         list_count = 2 * nqubit * (config["depth"] + 1)
-        return np.random.random(list_count) * 1e-1, Bounds(
-            [-np.Inf] * list_count, [np.Inf] * list_count
+        return (
+            np.random.random(list_count) * 1e-1,
+            Bounds([-np.Inf] * list_count, [np.Inf] * list_count),
         )
 
     ## init time

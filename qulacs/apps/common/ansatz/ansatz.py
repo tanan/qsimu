@@ -6,7 +6,9 @@ from qulacs.gate import DenseMatrix
 
 
 class Ansatz(metaclass=ABCMeta):
-    def __init__(self, nqubit, depth, noise, gate_set=None, time=None, bn=None, gamma=None):
+    def __init__(
+        self, nqubit, depth, noise, gate_set=None, time=None, bn=None, gamma=None
+    ):
         self.nqubit = nqubit
         self.depth = depth
         self.noise = noise
