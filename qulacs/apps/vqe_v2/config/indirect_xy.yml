@@ -6,6 +6,9 @@ gate:
   constraints: False
   bounds: True
   noise:
+    singlequbit:
+      enabled: False
+      value: None
     twoqubit:
       enabled: True
       value: 0.002
