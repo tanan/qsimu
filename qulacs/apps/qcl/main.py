@@ -76,8 +76,6 @@ def cost(random_list):
   global y_train
   global ansatz
   global time_step
-  state = QuantumState(config['nqubit'])
-  state.set_zero_state()
 
   U_out = ansatz.create_ansatz(random_list)
 
