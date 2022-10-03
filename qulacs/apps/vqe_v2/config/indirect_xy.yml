@@ -1,5 +1,5 @@
-depth: 4
-nqubit: 3
+depth: 12
+nqubit: 7
 gate:
   type: "indirect_xy"
   parametric_rotation_gate_set: 4
@@ -11,7 +11,7 @@ gate:
       value: None
     twoqubit:
       enabled: True
-      value: 0.002
+      value: 0.001
   time:
     type: "random"
     min_val: -3
