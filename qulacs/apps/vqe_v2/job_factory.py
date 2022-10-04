@@ -39,6 +39,10 @@ class JobFactory:
                 str(cost_history),
                 to_string(param_history),
                 str(iter_history),
+                self.config["gate"]["noise"]["singlequbit"]["enabled"],
+                self.config["gate"]["noise"]["singlequbit"]["value"]
+                if "value" in self.config["gate"]["noise"]["singlequbit"]
+                else None,
                 self.config["gate"]["noise"]["twoqubit"]["enabled"],
                 self.config["gate"]["noise"]["twoqubit"]["value"]
                 if "value" in self.config["gate"]["noise"]["twoqubit"]
@@ -75,6 +79,10 @@ class JobFactory:
                 str(cost_history),
                 to_string(param_history),
                 str(iter_history),
+                self.config["gate"]["noise"]["singlequbit"]["enabled"],
+                self.config["gate"]["noise"]["singlequbit"]["value"]
+                if "value" in self.config["gate"]["noise"]["singlequbit"]
+                else None,
                 self.config["gate"]["noise"]["twoqubit"]["enabled"],
                 self.config["gate"]["noise"]["twoqubit"]["value"]
                 if "value" in self.config["gate"]["noise"]["twoqubit"]
