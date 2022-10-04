@@ -109,14 +109,26 @@ def cost(random_list):
 
 
 def create_ansatz(config):
-  if config['gate']['bn']['type'] == "static_random":
-    config['gate']['bn']['value'] = np.random.rand(config['nqubit']) * config['gate']['bn']['range'] - (config['gate']['bn']['range'] / 2)
-  
-  if config['gate']['type'] == 'indirect_xy':
-    ansatz = XYAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'], config['gate']['time'], config['gate']['bn'])
-  elif config['gate']['type'] == 'direct':
-    ansatz = DirectAnsatz(config['nqubit'], config['depth'], config['gate']['parametric_rotation_gate_set'])
-  return ansatz
+    if config["gate"]["bn"]["type"] == "static_random":
+        config["gate"]["bn"]["value"] = np.random.rand(config["nqubit"]) * config[
+            "gate"
+        ]["bn"]["range"] - (config["gate"]["bn"]["range"] / 2)
+
+    if config["gate"]["type"] == "indirect_xy":
+        ansatz = XYAnsatz(
+            config["nqubit"],
+            config["depth"],
+            config["gate"]["parametric_rotation_gate_set"],
+            config["gate"]["time"],
+            config["gate"]["bn"],
+        )
+    elif config["gate"]["type"] == "direct":
+        ansatz = DirectAnsatz(
+            config["nqubit"],
+            config["depth"],
+            config["gate"]["parametric_rotation_gate_set"],
+        )
+    return ansatz
 
 
 def create_graph(x_train, y_train):
@@ -129,12 +141,12 @@ def create_graph(x_train, y_train):
 
 
 ## creat train data
-x_train, y_train = create_train_data(config['nqubit'])
+x_train, y_train = create_train_data(config["nqubit"])
 # create_graph(x_train, y_train.T)
 
 ## create Unitary gate instance
 ansatz = create_ansatz(config)
 
-random_list, bounds = randomize(config['nqubit'], config)
-result = minimize(cost, random_list, method='Nelder-Mead')
+random_list, bounds = randomize(config["nqubit"], config)
+result = minimize(cost, random_list, method="Nelder-Mead")
 print(result)

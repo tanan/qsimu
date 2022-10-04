@@ -8,8 +8,11 @@ import numpy as np
 from common.hamiltonian import Coefficients, Hamiltonian, HamiltonianModel
 from common.hamiltonian.ising import create_ising_hamiltonian
 
+
 class _Hamiltonian:
-    def __init__(self, nqubit: int, coef: Coefficients, model: HamiltonianModel) -> None:
+    def __init__(
+        self, nqubit: int, coef: Coefficients, model: HamiltonianModel
+    ) -> None:
         self.nqubit = nqubit
         self.coef = coef
         self.model = model
@@ -26,7 +29,7 @@ class _Hamiltonian:
     @cached_property
     def eigh(self) -> Tuple[np.ndarray, np.ndarray]:
         return np.linalg.eigh(self.value)
-    
+
     def circuit(self, t) -> QuantumCircuit:
         circuit = QuantumCircuit(self.nqubit)
         time_evol_op = np.dot(

@@ -48,21 +48,26 @@ class DirectAnsatz(Ansatz):
 
     def add_parametric_rotation_gate(self, circuit, target_qubit, params):
         circuit.add_gate(
-            merge(RY(target_qubit, params[0]), RZ(target_qubit, params[1]),)
+            merge(
+                RY(target_qubit, params[0]),
+                RZ(target_qubit, params[1]),
+            )
         )
-        if self.noise["singlequbit"]["enabled"]:
+        if self.noise["gate"]["singlequbit"]["enabled"]:
             circuit.add_gate(
-                DepolarizingNoise(target_qubit, self.noise["singlequbit"]["value"])
+                DepolarizingNoise(
+                    target_qubit, self.noise["gate"]["singlequbit"]["value"]
+                )
             )
         return circuit
 
     def add_cz_gate(self, circuit, control_qubit, target_qubit):
         circuit.add_gate(CZ(control_qubit, target_qubit))
 
-        if self.noise["twoqubit"]["enabled"]:
+        if self.noise["gate"]["twoqubit"]["enabled"]:
             circuit.add_gate(
                 TwoQubitDepolarizingNoise(
-                    control_qubit, target_qubit, self.noise["twoqubit"]["value"]
+                    control_qubit, target_qubit, self.noise["gate"]["twoqubit"]["value"]
                 )
             )
         return circuit

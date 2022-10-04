@@ -19,9 +19,9 @@ class XYAnsatz(Ansatz):
         super().__init__(nqubit, depth, noise, gate_set, time, bn, gamma)
 
     def create_hamiltonian(self, cn, bn, gamma):
-        XX = np.array(np.zeros(2 ** self.nqubit))
-        YY = np.array(np.zeros(2 ** self.nqubit))
-        Zn = np.array(np.zeros(2 ** self.nqubit))
+        XX = np.array(np.zeros(2**self.nqubit))
+        YY = np.array(np.zeros(2**self.nqubit))
+        Zn = np.array(np.zeros(2**self.nqubit))
         for k in range(self.nqubit - 1):
             for l in range(self.nqubit):
                 if k == l:
@@ -74,9 +74,11 @@ class XYAnsatz(Ansatz):
         circuit = QuantumCircuit(self.nqubit)
         for d in range(self.depth):
             circuit.add_gate(CNOT(0, 1))
-            if self.noise["twoqubit"]["enabled"]:
+            if self.noise["gate"]["twoqubit"]["enabled"]:
                 circuit.add_gate(
-                    TwoQubitDepolarizingNoise(0, 1, self.noise["twoqubit"]["value"])
+                    TwoQubitDepolarizingNoise(
+                        0, 1, self.noise["gate"]["twoqubit"]["value"]
+                    )
                 )
 
             if self.bn["type"] == "random":
@@ -114,7 +116,8 @@ class XYAnsatz(Ansatz):
                 circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
             else:
                 circuit = self.add_parametric_rotation_gate(
-                    circuit, random_list[(self.gate_set * d) : (self.gate_set * d) + 4],
+                    circuit,
+                    random_list[(self.gate_set * d) : (self.gate_set * d) + 4],
                 )
 
                 ## When time is static, get time from static array.
@@ -130,12 +133,12 @@ class XYAnsatz(Ansatz):
             circuit.add_gate(merge(RY(0, params[0]), RZ(0, params[1])))
             circuit.add_gate(merge(RY(1, params[2]), RZ(1, params[3])))
 
-            if self.noise["singlequbit"]["enabled"]:
+            if self.noise["gate"]["singlequbit"]["enabled"]:
                 circuit.add_gate(
-                    DepolarizingNoise(0, self.noise["singlequbit"]["value"])
+                    DepolarizingNoise(0, self.noise["gate"]["singlequbit"]["value"])
                 )
                 circuit.add_gate(
-                    DepolarizingNoise(1, self.noise["singlequbit"]["value"])
+                    DepolarizingNoise(1, self.noise["gate"]["singlequbit"]["value"])
                 )
 
         else:

@@ -12,9 +12,9 @@ class XYZAnsatz(Ansatz):
         super().__init__(nqubit, depth, noise, gate_set, time, bn)
 
     def create_hamiltonian(self, cn, bn=None, gamma=None):
-        XX = np.array(np.zeros(2 ** self.nqubit))
-        YY = np.array(np.zeros(2 ** self.nqubit))
-        ZZ = np.array(np.zeros(2 ** self.nqubit))
+        XX = np.array(np.zeros(2**self.nqubit))
+        YY = np.array(np.zeros(2**self.nqubit))
+        ZZ = np.array(np.zeros(2**self.nqubit))
         for k in range(self.nqubit - 1):
             for l in range(self.nqubit):
                 if k == l:

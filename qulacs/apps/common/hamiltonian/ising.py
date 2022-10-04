@@ -3,9 +3,10 @@ import numpy as np
 from common.ansatz.pauli_gate import PauliGate
 from common.hamiltonian import Coefficients
 
+
 def create_ising_hamiltonian(nqubit: int, coef: Coefficients) -> np.ndarray:
-    XX = np.array(np.zeros(2 ** nqubit))
-    Y = np.array(np.zeros(2 ** nqubit))
+    XX = np.array(np.zeros(2**nqubit))
+    Y = np.array(np.zeros(2**nqubit))
     for k in range(nqubit - 1):
         for l in range(nqubit):
             if k == l:
