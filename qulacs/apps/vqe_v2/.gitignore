@@ -1,3 +1,4 @@
+.sqbpro
 *.sqlite3
 data/backup/*.sql
 data/*.txt
