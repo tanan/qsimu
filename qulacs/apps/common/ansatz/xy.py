@@ -74,10 +74,10 @@ class XYAnsatz(Ansatz):
         circuit = QuantumCircuit(self.nqubit)
         for d in range(self.depth):
             circuit.add_gate(CNOT(0, 1))
-            if self.noise["gate"]["twoqubit"]["enabled"]:
+            if self.noise["twoqubit"]["enabled"]:
                 circuit.add_gate(
                     TwoQubitDepolarizingNoise(
-                        0, 1, self.noise["gate"]["twoqubit"]["value"]
+                        0, 1, self.noise["twoqubit"]["value"]
                     )
                 )
 
@@ -133,12 +133,12 @@ class XYAnsatz(Ansatz):
             circuit.add_gate(merge(RY(0, params[0]), RZ(0, params[1])))
             circuit.add_gate(merge(RY(1, params[2]), RZ(1, params[3])))
 
-            if self.noise["gate"]["singlequbit"]["enabled"]:
+            if self.noise["singlequbit"]["enabled"]:
                 circuit.add_gate(
-                    DepolarizingNoise(0, self.noise["gate"]["singlequbit"]["value"])
+                    DepolarizingNoise(0, self.noise["singlequbit"]["value"])
                 )
                 circuit.add_gate(
-                    DepolarizingNoise(1, self.noise["gate"]["singlequbit"]["value"])
+                    DepolarizingNoise(1, self.noise["singlequbit"]["value"])
                 )
 
         else:
