@@ -53,10 +53,10 @@ class DirectAnsatz(Ansatz):
                 RZ(target_qubit, params[1]),
             )
         )
-        if self.noise["gate"]["singlequbit"]["enabled"]:
+        if self.noise["singlequbit"]["enabled"]:
             circuit.add_gate(
                 DepolarizingNoise(
-                    target_qubit, self.noise["gate"]["singlequbit"]["value"]
+                    target_qubit, self.noise["singlequbit"]["value"]
                 )
             )
         return circuit
@@ -64,10 +64,10 @@ class DirectAnsatz(Ansatz):
     def add_cz_gate(self, circuit, control_qubit, target_qubit):
         circuit.add_gate(CZ(control_qubit, target_qubit))
 
-        if self.noise["gate"]["twoqubit"]["enabled"]:
+        if self.noise["twoqubit"]["enabled"]:
             circuit.add_gate(
                 TwoQubitDepolarizingNoise(
-                    control_qubit, target_qubit, self.noise["gate"]["twoqubit"]["value"]
+                    control_qubit, target_qubit, self.noise["twoqubit"]["value"]
                 )
             )
         return circuit
