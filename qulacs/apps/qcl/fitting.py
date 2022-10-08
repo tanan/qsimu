@@ -1,5 +1,7 @@
 import math
+import yaml
 import sys
+from typing import Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
@@ -19,8 +21,8 @@ time_step = 0.77  ## ランダムハミルトニアンによる時間発展の�
 
 ## init variables
 config = None
-param_history = []
-cost_history = []
+# param_history = []
+# cost_history = []
 # iter_history = []
 # iteration = 0
 ansatz = None
@@ -52,7 +54,7 @@ def U_in(nqubit, x, U_time):
 
 def create_train_data(
     nqubit: int, x_min: float = -1, x_max: float = 1, num_x_train: float = 0.02
-) -> np.ndarray:
+) -> Tuple[np.ndarray, np.ndarray]:
     x_train = np.arange(x_min, x_max, num_x_train)
     hamiltonian = create_transverse_ising_hamiltonian_generator(
         nqubit,
@@ -140,13 +142,19 @@ def create_graph(x_train, y_train):
     plt.show()
 
 
-## creat train data
-x_train, y_train = create_train_data(config["nqubit"])
-# create_graph(x_train, y_train.T)
+if __name__ == "__main__":
+    args = sys.argv
+    path = args[1]
+    with open(path, "r") as f:
+        config = yaml.safe_load(f)
 
-## create Unitary gate instance
-ansatz = create_ansatz(config)
+    ## creat train data
+    x_train, y_train = create_train_data(config["nqubit"])
+    # create_graph(x_train, y_train.T)
 
-random_list, bounds = randomize(config["nqubit"], config)
-result = minimize(cost, random_list, method="Nelder-Mead")
-print(result)
+    ## create Unitary gate instance
+    ansatz = create_ansatz(config)
+
+    random_list, bounds = randomize(config["nqubit"], config)
+    result = minimize(cost, random_list, method="Nelder-Mead")
+    print(result)
