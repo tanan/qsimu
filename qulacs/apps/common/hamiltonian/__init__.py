@@ -23,6 +23,9 @@ class HamiltonianModel(Enum):
     HEISENBERG = 3
 
 
+class HamiltonianModelError(Exception):
+    ...
+
 #: A type variable represents coefficients of each Hamiltonian term.
 #: When you use Transverse Ising Hamiltonian(\sum a_j * X_j + \sum\sum J_jk * (Z_j Z_k) ), you can select Iterable[float, float].
 #: First float is coefficient of X_j,  Second one is coefficient of Z_j Z_k.

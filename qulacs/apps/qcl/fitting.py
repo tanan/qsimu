@@ -8,11 +8,11 @@ from scipy.optimize import minimize
 from qulacs import QuantumState, QuantumCircuit, Observable
 
 sys.path.append("..")
-from common import hamiltonian
 from common.hamiltonian import HamiltonianModel
-from common.hamiltonian.generator import create_transverse_ising_hamiltonian_generator
 from common.ansatz.xy import XYAnsatz
 from common.ansatz.direct import DirectAnsatz
+from common.estimator import Observables
+from common.estimator.hamiltonian import create_hamiltonian_estimator
 from common.random_list import randomize
 
 
@@ -56,24 +56,24 @@ def create_train_data(
     nqubit: int, x_min: float = -1, x_max: float = 1, num_x_train: float = 0.02
 ) -> Tuple[np.ndarray, np.ndarray]:
     x_train = np.arange(x_min, x_max, num_x_train)
-    hamiltonian = create_transverse_ising_hamiltonian_generator(
+    observables = []
+    for i in range(3):
+        obs = Observable(nqubit)
+        obs.add_operator(1.0, f"Z {i}")
+        observables.append(obs)
+
+    estimator = create_hamiltonian_estimator(
         nqubit,
-        np.random.uniform(-1, 1, fully_connected_combinations_count(nqubit)),
-        np.random.uniform(-1, 1, nqubit),
+        observables,
+        (
+            np.random.uniform(-1, 1, fully_connected_combinations_count(nqubit)),
+            np.random.uniform(-1, 1, nqubit),
+        ),
         HamiltonianModel.TRANSVERSE_ISING,
+        x_train,
     )
 
-    y_train = []
-    for x in x_train:
-        y = []
-        for target in range(3):
-            obs = Observable(nqubit)
-            obs.add_operator(1.0, f"Z {target}")
-            state = QuantumState(nqubit)
-            state.set_zero_state()
-            hamiltonian.circuit(300 + (4 * (x + 1))).update_quantum_state(state)
-            y.append(obs.get_expectation_value(state))
-        y_train.append(y)
+    y_train = estimator.value
 
     return np.array(x_train), np.array(y_train)
 
@@ -152,11 +152,11 @@ if __name__ == "__main__":
 
     ## creat train data
     x_train, y_train = create_train_data(config["nqubit"])
-    # create_graph(x_train, y_train.T)
+    create_graph(x_train, y_train.T)
 
     ## create Unitary gate instance
-    ansatz = create_ansatz(config)
+    # ansatz = create_ansatz(config)
 
-    random_list, bounds = randomize(config["nqubit"], config)
-    result = minimize(cost, random_list, method="Nelder-Mead")
-    print(result)
+    # random_list, bounds = randomize(config["nqubit"], config)
+    # result = minimize(cost, random_list, method="Nelder-Mead")
+    # print(result)
