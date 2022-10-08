@@ -120,6 +120,7 @@ def create_ansatz(config):
         ansatz = XYAnsatz(
             config["nqubit"],
             config["depth"],
+            config["gate"]["noise"],
             config["gate"]["parametric_rotation_gate_set"],
             config["gate"]["time"],
             config["gate"]["bn"],
@@ -128,6 +129,7 @@ def create_ansatz(config):
         ansatz = DirectAnsatz(
             config["nqubit"],
             config["depth"],
+            config["gate"]["noise"],
             config["gate"]["parametric_rotation_gate_set"],
         )
     return ansatz
