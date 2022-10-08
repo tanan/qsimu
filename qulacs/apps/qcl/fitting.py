@@ -9,8 +9,7 @@ from qulacs import QuantumState, QuantumCircuit, Observable
 
 sys.path.append("..")
 from common.hamiltonian import HamiltonianModel
-from common.ansatz.xy import XYAnsatz
-from common.ansatz.direct import DirectAnsatz
+from common.ansatz.ansatz import create_ansatz
 from common.estimator import Observables
 from common.estimator.hamiltonian import create_hamiltonian_estimator
 from common.random_list import randomize
@@ -110,31 +109,6 @@ def cost(random_list):
     return L
 
 
-def create_ansatz(config):
-    if config["gate"]["bn"]["type"] == "static_random":
-        config["gate"]["bn"]["value"] = np.random.rand(config["nqubit"]) * config[
-            "gate"
-        ]["bn"]["range"] - (config["gate"]["bn"]["range"] / 2)
-
-    if config["gate"]["type"] == "indirect_xy":
-        ansatz = XYAnsatz(
-            config["nqubit"],
-            config["depth"],
-            config["gate"]["noise"],
-            config["gate"]["parametric_rotation_gate_set"],
-            config["gate"]["time"],
-            config["gate"]["bn"],
-        )
-    elif config["gate"]["type"] == "direct":
-        ansatz = DirectAnsatz(
-            config["nqubit"],
-            config["depth"],
-            config["gate"]["noise"],
-            config["gate"]["parametric_rotation_gate_set"],
-        )
-    return ansatz
-
-
 def create_graph(x_train, y_train):
     plt.figure(figsize=(10, 6))
     plt.plot(x_train, y_train[0], ".", label="Teacher[0]")
@@ -152,11 +126,11 @@ if __name__ == "__main__":
 
     ## creat train data
     x_train, y_train = create_train_data(config["nqubit"])
-    create_graph(x_train, y_train.T)
+    # create_graph(x_train, y_train.T)
 
     ## create Unitary gate instance
-    # ansatz = create_ansatz(config)
+    ansatz = create_ansatz(config)
 
-    # random_list, bounds = randomize(config["nqubit"], config)
-    # result = minimize(cost, random_list, method="Nelder-Mead")
-    # print(result)
+    random_list, bounds = randomize(config["nqubit"], config)
+    result = minimize(cost, random_list, method="Nelder-Mead")
+    print(result)
