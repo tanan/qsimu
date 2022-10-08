@@ -11,9 +11,11 @@ from common.hamiltonian import Hamiltonian
 
 Observables: TypeAlias = Union[Observable, List[Observable]]
 
+
 class Estimate(Protocol):
     @abstractproperty
     def value(self) -> np.ndarray:
         ...
+
 
 HamiltonianEstimator: TypeAlias = Callable[[Observables, Hamiltonian], Estimate]

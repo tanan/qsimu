@@ -4,12 +4,15 @@ from qulacs import QuantumCircuit
 from qulacs.gate import CZ, RY, RZ, merge, DepolarizingNoise, TwoQubitDepolarizingNoise
 
 sys.path.append("..")
-from .ansatz import Ansatz
+from .ansatz import Ansatz, AnsatzType
 
 
 class DirectAnsatz(Ansatz):
     def __init__(self, nqubit, depth, noise, gate_set=None):
         super().__init__(nqubit, depth, noise, gate_set)
+
+    def ansatz_type(self):
+        return AnsatzType.DIRECT
 
     def create_hamiltonian(self, cn=None, bn=None, gamma=None):
         return None, None
@@ -55,9 +58,7 @@ class DirectAnsatz(Ansatz):
         )
         if self.noise["singlequbit"]["enabled"]:
             circuit.add_gate(
-                DepolarizingNoise(
-                    target_qubit, self.noise["singlequbit"]["value"]
-                )
+                DepolarizingNoise(target_qubit, self.noise["singlequbit"]["value"])
             )
         return circuit
 

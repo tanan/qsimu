@@ -45,7 +45,7 @@ class DBClient:
                 job.noise_singlequbit_enabled,
                 job.noise_singlequbit_value,
                 job.noise_twoqubit_enabled,
-                job.noise_twoqubit_value
+                job.noise_twoqubit_value,
             ),
         )
         self.conn.commit()

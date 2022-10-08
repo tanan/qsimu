@@ -10,13 +10,16 @@ from qulacs.gate import (
     TwoQubitDepolarizingNoise,
 )
 
-from .ansatz import Ansatz, ParametricGateCountError
+from .ansatz import Ansatz, AnsatzType, ParametricGateCountError
 from .pauli_gate import PauliGate
 
 
 class XYAnsatz(Ansatz):
     def __init__(self, nqubit, depth, noise, gate_set, time, bn, gamma=0):
         super().__init__(nqubit, depth, noise, gate_set, time, bn, gamma)
+
+    def ansatz_type(self):
+        return AnsatzType.INDIRECT_XY
 
     def create_hamiltonian(self, cn, bn, gamma):
         XX = np.array(np.zeros(2**self.nqubit))
@@ -76,9 +79,7 @@ class XYAnsatz(Ansatz):
             circuit.add_gate(CNOT(0, 1))
             if self.noise["twoqubit"]["enabled"]:
                 circuit.add_gate(
-                    TwoQubitDepolarizingNoise(
-                        0, 1, self.noise["twoqubit"]["value"]
-                    )
+                    TwoQubitDepolarizingNoise(0, 1, self.noise["twoqubit"]["value"])
                 )
 
             if self.bn["type"] == "random":
