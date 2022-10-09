@@ -5,6 +5,13 @@ gate:
   parametric_rotation_gate_set: 3
   constraints: ""
   bounds: False
+  noise:
+    singlequbit:
+      enabled: False
+      value: None
+    twoqubit:
+      enabled: False
+      value: None
   bn:
     type: "static"
   cn:
