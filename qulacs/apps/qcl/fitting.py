@@ -1,3 +1,4 @@
+from datetime import datetime
 import math
 import yaml
 import sys
@@ -150,7 +151,7 @@ def cost(random_list):
     return L
 
 
-def create_graph(x_train, y_init, y_teacher, y_pred):
+def create_graph(x_train, y_init, y_teacher, y_pred, name, nqubit, depth):
     plt.figure(figsize=(10, 6))
     plt.plot(x_train, y_teacher[0], ".", label="Teacher[0]")
     plt.plot(x_train, y_teacher[1], ".", label="Teacher[1]")
@@ -162,7 +163,8 @@ def create_graph(x_train, y_init, y_teacher, y_pred):
     plt.plot(x_train, y_pred[1], '--', label='Final Model Prediction[1]')
     plt.plot(x_train, y_pred[2], '--', label='Final Model Prediction[2]')
     plt.legend()
-    plt.show()
+    plt.savefig(f"./image/hamiltonian-{name}-{nqubit}-{depth}-{datetime.now().strftime('%Y%m%d%H%M')}")
+    # plt.show()
 
 
 def create_y(nqubit, ansatz, time_step, xs, params):
@@ -198,4 +200,4 @@ if __name__ == "__main__":
     # print(result)
     y_pred = create_y(nqubit, ansatz, time_step, x_train, result.x)
     
-    create_graph(x_train, y_init.T, y_train.T, y_pred.T)
+    create_graph(x_train, y_init.T, y_train.T, y_pred.T, ansatz.ansatz_type.name, config['nqubit'], config['depth'])
