@@ -1,4 +1,4 @@
-depth: 4
+depth: 8
 nqubit: 3
 gate:
   type: "direct"
