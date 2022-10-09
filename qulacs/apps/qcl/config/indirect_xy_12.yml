@@ -6,6 +6,13 @@ gate:
   max_time: 10
   constraints: ""
   bounds: False
+  noise:
+    singlequbit:
+      enabled: False
+      value: None
+    twoqubit:
+      enabled: False
+      value: None
   time:
     type: "random"
     min_val: -1

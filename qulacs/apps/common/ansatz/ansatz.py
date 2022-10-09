@@ -27,7 +27,7 @@ class Ansatz(metaclass=ABCMeta):
             [1] * self.nqubit, bn, gamma
         )
 
-    @abstractmethod
+    @property
     def ansatz_type(self):
         pass
 

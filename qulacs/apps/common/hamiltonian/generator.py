@@ -30,13 +30,16 @@ class _Hamiltonian:
     def eigh(self) -> Tuple[np.ndarray, np.ndarray]:
         return np.linalg.eigh(self.value)
 
-    def circuit(self, t) -> QuantumCircuit:
-        circuit = QuantumCircuit(self.nqubit)
+    def time_evol_operator(self, t) -> DenseMatrix:
         time_evol_op = np.dot(
             np.dot(self.eigh[1], np.diag(np.exp(-1j * t * self.eigh[0]))),
             self.eigh[1].T.conj(),
         )
-        circuit.add_gate(DenseMatrix([i for i in range(self.nqubit)], time_evol_op))
+        return DenseMatrix([i for i in range(self.nqubit)], time_evol_op)
+
+    def circuit(self, t) -> QuantumCircuit:
+        circuit = QuantumCircuit(self.nqubit)
+        circuit.add_gate(self.time_evol_operator(t))
         return circuit
 
 

@@ -11,6 +11,7 @@ class DirectAnsatz(Ansatz):
     def __init__(self, nqubit, depth, noise, gate_set=None):
         super().__init__(nqubit, depth, noise, gate_set)
 
+    @property
     def ansatz_type(self):
         return AnsatzType.DIRECT
 

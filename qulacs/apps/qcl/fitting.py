@@ -8,6 +8,7 @@ from scipy.optimize import minimize
 from qulacs import QuantumState, QuantumCircuit, Observable
 
 sys.path.append("..")
+from common import hamiltonian
 from common.hamiltonian import HamiltonianModel
 from common.hamiltonian.generator import create_transverse_ising_hamiltonian_generator
 from common.ansatz.direct import DirectAnsatz
@@ -107,21 +108,29 @@ def create_train_data(
 
 
 def qcl_pred(nqubit, x, U_time, U_out):
-    y_train = []
-    for x in x_train:
-        y = []
-        for target in range(3):
-            obs = Observable(nqubit)
-            obs.add_operator(1.0, f"Z {target}")
-            state = QuantumState(nqubit)
-            state.set_zero_state()
-            U_in(x, U_time).update_quantum_state(state)
-            U_out.update_quantum_state(state)
-            y.append(obs.get_expectation_value(state))
-        y_train.append(y)
+    y = []
+    for target in range(3):
+        obs = Observable(nqubit)
+        obs.add_operator(1.0, f"Z {target}")
+        state = QuantumState(nqubit)
+        state.set_zero_state()
+        U_in(nqubit, x, U_time).update_quantum_state(state)
+        U_out.update_quantum_state(state)
+        y.append(obs.get_expectation_value(state))
+    return y
 
-    return y_train
 
+def create_U_time(nqubit, ansatz, time_step):
+    if ansatz.ansatz_type == AnsatzType.DIRECT:
+        hamiltonian = create_transverse_ising_hamiltonian_generator(
+            nqubit,
+            np.random.uniform(-1, 1, fully_connected_combinations_count(nqubit)),
+            np.random.uniform(-1, 1, nqubit),
+            HamiltonianModel.TRANSVERSE_ISING,
+        )
+        return hamiltonian.time_evol_operator(time_step)
+    else:
+        return ansatz.create_hamiltonian_gate(time_step)
 
 def cost(random_list):
     global nqubit
@@ -132,33 +141,40 @@ def cost(random_list):
 
     U_out = ansatz.create_ansatz(random_list)
 
-    if ansatz.ansatz_type == AnsatzType.DIRECT:
-        U_time = create_transverse_ising_hamiltonian_generator(
-            nqubit,
-            (
-                np.random.uniform(-1, 1, fully_connected_combinations_count(nqubit)),
-                np.random.uniform(-1, 1, nqubit),
-            ),
-            HamiltonianModel.TRANSVERSE_ISING,
-        )
-    else:
-        U_time = ansatz.create_hamiltonian_gate(time_step)
+    U_time = create_U_time(nqubit, ansatz, time_step)
 
-    y_pred = [
-        qcl_pred(x, U_time, U_out) for x in x_train
-    ]
+    y_pred = np.array([
+        qcl_pred(nqubit, x, U_time, U_out) for x in x_train
+    ])
     L = ((y_pred - y_train) ** 2).mean()
     return L
 
 
-def create_graph(x_train, y_train):
+def create_graph(x_train, y_init, y_teacher, y_pred):
     plt.figure(figsize=(10, 6))
-    plt.plot(x_train, y_train[0], ".", label="Teacher[0]")
-    plt.plot(x_train, y_train[1], ".", label="Teacher[1]")
-    plt.plot(x_train, y_train[2], ".", label="Teacher[2]")
+    plt.plot(x_train, y_teacher[0], ".", label="Teacher[0]")
+    plt.plot(x_train, y_teacher[1], ".", label="Teacher[1]")
+    plt.plot(x_train, y_teacher[2], ".", label="Teacher[2]")
+    plt.plot(x_train, y_init[0], 'o', label='Initial Model Prediction[0]')
+    plt.plot(x_train, y_init[1], 'o', label='Initial Model Prediction[1]')
+    plt.plot(x_train, y_init[2], 'o', label='Initial Model Prediction[2]')
+    plt.plot(x_train, y_pred[0], '--', label='Final Model Prediction[0]')
+    plt.plot(x_train, y_pred[1], '--', label='Final Model Prediction[1]')
+    plt.plot(x_train, y_pred[2], '--', label='Final Model Prediction[2]')
     plt.legend()
     plt.show()
 
+
+def create_y(nqubit, ansatz, time_step, xs, params):
+    U_out = ansatz.create_ansatz(params)
+
+    U_time = create_U_time(nqubit, ansatz, time_step)
+
+    y_pred = np.array([
+        qcl_pred(nqubit, x, U_time, U_out) for x in xs
+    ])
+
+    return y_pred
 
 if __name__ == "__main__":
     args = sys.argv
@@ -172,9 +188,14 @@ if __name__ == "__main__":
     x_train, y_train = create_train_data(nqubit)
     # create_graph(x_train, y_train.T)
 
-    ## create Unitary gate instance
+    # create Unitary gate instance
     ansatz = create_ansatz(config)
 
     random_list, bounds = randomize(nqubit, config)
+    y_init = create_y(nqubit, ansatz, time_step, x_train, random_list)
+    
     result = minimize(cost, random_list, method="Nelder-Mead")
-    print(result)
+    # print(result)
+    y_pred = create_y(nqubit, ansatz, time_step, x_train, result.x)
+    
+    create_graph(x_train, y_init.T, y_train.T, y_pred.T)
