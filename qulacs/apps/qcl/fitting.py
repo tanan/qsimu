@@ -9,7 +9,10 @@ from qulacs import QuantumState, QuantumCircuit, Observable
 
 sys.path.append("..")
 from common.hamiltonian import HamiltonianModel
-from common.ansatz.ansatz import create_ansatz
+from common.hamiltonian.generator import create_transverse_ising_hamiltonian_generator
+from common.ansatz.direct import DirectAnsatz
+from common.ansatz.xy import XYAnsatz
+from common.ansatz.ansatz import AnsatzType
 from common.estimator import Observables
 from common.estimator.hamiltonian import create_hamiltonian_estimator
 from common.random_list import randomize
@@ -19,6 +22,7 @@ from common.random_list import randomize
 time_step = 0.77  ## ランダムハミルトニアンによる時間発展の経過時間
 
 ## init variables
+nqubit = None
 config = None
 # param_history = []
 # cost_history = []
@@ -32,6 +36,31 @@ func_to_learn = lambda x: np.sin(x * np.pi)
 ## random seed
 random_seed = 0
 np.random.seed(random_seed)
+
+
+def create_ansatz(config):
+    if config["gate"]["bn"]["type"] == "static_random":
+        config["gate"]["bn"]["value"] = np.random.rand(config["nqubit"]) * config[
+            "gate"
+        ]["bn"]["range"] - (config["gate"]["bn"]["range"] / 2)
+
+    if config["gate"]["type"] == "indirect_xy":
+        ansatz = XYAnsatz(
+            config["nqubit"],
+            config["depth"],
+            config["gate"]["noise"],
+            config["gate"]["parametric_rotation_gate_set"],
+            config["gate"]["time"],
+            config["gate"]["bn"],
+        )
+    elif config["gate"]["type"] == "direct":
+        ansatz = DirectAnsatz(
+            config["nqubit"],
+            config["depth"],
+            config["gate"]["noise"],
+            config["gate"]["parametric_rotation_gate_set"],
+        )
+    return ansatz
 
 
 def fully_connected_combinations_count(n):
@@ -95,6 +124,7 @@ def qcl_pred(nqubit, x, U_time, U_out):
 
 
 def cost(random_list):
+    global nqubit
     global x_train
     global y_train
     global ansatz
@@ -102,8 +132,20 @@ def cost(random_list):
 
     U_out = ansatz.create_ansatz(random_list)
 
+    if ansatz.ansatz_type == AnsatzType.DIRECT:
+        U_time = create_transverse_ising_hamiltonian_generator(
+            nqubit,
+            (
+                np.random.uniform(-1, 1, fully_connected_combinations_count(nqubit)),
+                np.random.uniform(-1, 1, nqubit),
+            ),
+            HamiltonianModel.TRANSVERSE_ISING,
+        )
+    else:
+        U_time = ansatz.create_hamiltonian_gate(time_step)
+
     y_pred = [
-        qcl_pred(x, ansatz.create_hamiltonian_gate(time_step), U_out) for x in x_train
+        qcl_pred(x, U_time, U_out) for x in x_train
     ]
     L = ((y_pred - y_train) ** 2).mean()
     return L
@@ -124,13 +166,15 @@ if __name__ == "__main__":
     with open(path, "r") as f:
         config = yaml.safe_load(f)
 
+    nqubit = config["nqubit"]
+
     ## creat train data
-    x_train, y_train = create_train_data(config["nqubit"])
+    x_train, y_train = create_train_data(nqubit)
     # create_graph(x_train, y_train.T)
 
     ## create Unitary gate instance
     ansatz = create_ansatz(config)
 
-    random_list, bounds = randomize(config["nqubit"], config)
+    random_list, bounds = randomize(nqubit, config)
     result = minimize(cost, random_list, method="Nelder-Mead")
     print(result)
