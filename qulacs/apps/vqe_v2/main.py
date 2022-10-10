@@ -138,7 +138,7 @@ def run(config):
         )
     else:
         opt = minimize(
-            cost, init_random_list, method="SLSQP", options=options, callback=record
+            cost, init_random_list, method="BFGS", options=options, callback=record
         )
 
     end_time = time.perf_counter()
