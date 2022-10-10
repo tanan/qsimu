@@ -74,11 +74,12 @@ def U_in(nqubit, x, U_time):
     U = QuantumCircuit(nqubit)
     angle_y = np.arcsin(x)
     angle_z = np.arccos(x**2)
-    for i in range(nqubit):
-        U.add_RY_gate(i, angle_y)
-        U.add_RZ_gate(i, angle_z)
+    for loop in range(3):
+        for i in range(nqubit):
+            U.add_RY_gate(i, angle_y)
+            U.add_RZ_gate(i, angle_z)
 
-    U.add_gate(U_time)
+        U.add_gate(U_time)
     return U
 
 
