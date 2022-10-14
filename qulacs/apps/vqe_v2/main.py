@@ -11,6 +11,7 @@ from hamiltonian import create_ising_hamiltonian
 from constraints import create_time_constraints
 from dbclient import DBClient
 from qulacs import QuantumState, QuantumCircuit
+from qulacsvis import circuit_drawer
 from scipy.optimize import minimize
 
 sys.path.append("..")
@@ -151,6 +152,8 @@ def run(config):
     client.insertJob(job)
     # output(param_history, cost_history, iter_history)
     # np.savetxt('data/xy_params.txt', param_history[-1])
+    img = circuit_drawer(ansatz.create_ansatz(init_random_list), "latex")
+    img.save(f"image/{job.id}.png")
 
 
 def start(config):
