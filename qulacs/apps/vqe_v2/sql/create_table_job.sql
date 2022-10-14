@@ -24,5 +24,6 @@ CREATE TABLE jobs(
   noise_singlequbit_enabled TEXT,
   noise_singlequbit_value TEXT,
   noise_twoqubit_enabled TEXT,
-  noise_twoqubit_value TEXT
+  noise_twoqubit_value TEXT,
+  config TEXT
 )

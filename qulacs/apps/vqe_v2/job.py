@@ -26,6 +26,7 @@ class Job:
         noise_singlequbit_value,
         noise_twoqubit_enabled,
         noise_twoqubit_value,
+        config,
     ):
         self.creation_time = creation_time
         self.execution_second = execution_second
@@ -52,3 +53,4 @@ class Job:
         self.noise_singlequbit_value = noise_singlequbit_value
         self.noise_twoqubit_enabled = noise_twoqubit_enabled
         self.noise_twoqubit_value = noise_twoqubit_value
+        self.config = config

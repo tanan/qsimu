@@ -47,6 +47,7 @@ class JobFactory:
                 self.config["gate"]["noise"]["twoqubit"]["value"]
                 if "value" in self.config["gate"]["noise"]["twoqubit"]
                 else None,
+                self.config,
             )
         else:
             job = Job(
@@ -87,5 +88,6 @@ class JobFactory:
                 self.config["gate"]["noise"]["twoqubit"]["value"]
                 if "value" in self.config["gate"]["noise"]["twoqubit"]
                 else None,
+                self.config,
             )
         return job
