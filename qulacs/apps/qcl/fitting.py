@@ -197,7 +197,7 @@ if __name__ == "__main__":
     random_list, bounds = randomize(nqubit, config)
     y_init = create_y(nqubit, ansatz, time_step, x_train, random_list)
     
-    result = minimize(cost, random_list, method="Nelder-Mead")
+    result = minimize(cost, random_list, method="BFGS")
     # print(result)
     y_pred = create_y(nqubit, ansatz, time_step, x_train, result.x)
     
