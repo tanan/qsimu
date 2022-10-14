@@ -1,6 +1,7 @@
 class Job:
     def __init__(
         self,
+        id,
         creation_time,
         execution_second,
         nqubit,
@@ -28,6 +29,7 @@ class Job:
         noise_twoqubit_value,
         config,
     ):
+        self.id = id
         self.creation_time = creation_time
         self.execution_second = execution_second
         self.nqubit = nqubit

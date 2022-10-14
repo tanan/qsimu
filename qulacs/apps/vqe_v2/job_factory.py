@@ -1,5 +1,7 @@
+import uuid
 from job import Job
 from utils import to_string
+import json
 
 
 class JobFactory:
@@ -18,6 +20,7 @@ class JobFactory:
     ):
         if self.config["gate"]["type"] == "direct":
             job = Job(
+                str(uuid.uuid4()),
                 current_time,
                 end_time - start_time,
                 self.config["nqubit"],
@@ -47,10 +50,11 @@ class JobFactory:
                 self.config["gate"]["noise"]["twoqubit"]["value"]
                 if "value" in self.config["gate"]["noise"]["twoqubit"]
                 else None,
-                self.config,
+                json.dump(self.config),
             )
         else:
             job = Job(
+                str(uuid.uuid4()),
                 current_time,
                 end_time - start_time,
                 self.config["nqubit"],
@@ -88,6 +92,6 @@ class JobFactory:
                 self.config["gate"]["noise"]["twoqubit"]["value"]
                 if "value" in self.config["gate"]["noise"]["twoqubit"]
                 else None,
-                self.config,
+                json.dump(self.config),
             )
         return job

@@ -1,5 +1,4 @@
 import sqlite3
-import json
 from pathlib import Path
 
 
@@ -22,6 +21,7 @@ class DBClient:
         cur.execute(
             sql,
             (
+                job.id,
                 job.creation_time,
                 job.execution_second,
                 job.nqubit,
@@ -47,7 +47,7 @@ class DBClient:
                 job.noise_singlequbit_value,
                 job.noise_twoqubit_enabled,
                 job.noise_twoqubit_value,
-                json.dump(job.config),
+                job.config,
             ),
         )
         self.conn.commit()

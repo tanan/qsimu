@@ -1,5 +1,5 @@
 CREATE TABLE jobs(
-  id INTEGER PRIMARY KEY,
+  id char(36) PRIMARY KEY,
   creation_time TIMESTAMP,
   execution_second INTEGER,
   nqubit INTEGER,
