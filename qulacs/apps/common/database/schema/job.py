@@ -6,33 +6,33 @@ import json
 
 @dataclass
 class Job:
-    id: str = id
-    creation_time: datetime = creation_time
-    execution_second: int = execution_second
-    nqubit: int = nqubit
-    depth: int = depth
-    gate_type: str = gate_type
-    gate_set: str = gate_set
-    bn_type: str = bn_type
-    bn_range: int = bn_range
-    bn: str = bn
-    cn: str = cn
-    r: str = r
-    t_type: str = t_type
-    max_time: str = max_time
-    min_time: str = min_time
-    t: str = t
-    cost: str = cost
-    parameter: str = parameter
-    iteration: str = iteration
-    cost_history: str = cost_history
-    parameter_history: str = parameter_history
-    iteration_history: str = iteration_history
-    noise_singlequbit_enabled: str = noise_singlequbit_enabled
-    noise_singlequbit_value: str = noise_singlequbit_value
-    noise_twoqubit_enabled: str = noise_twoqubit_enabled
-    noise_twoqubit_value: str = noise_twoqubit_value
-    config: str = config
+    id: str
+    creation_time: datetime
+    execution_second: int
+    nqubit: int
+    depth: int
+    gate_type: str
+    gate_set: str
+    bn_type: str
+    bn_range: int
+    bn: str
+    cn: str
+    r: str
+    t_type: str
+    max_time: str
+    min_time: str
+    t: str
+    cost: str
+    parameter: str
+    iteration: str
+    cost_history: str
+    parameter_history: str
+    iteration_history: str
+    noise_singlequbit_enabled: str
+    noise_singlequbit_value: str
+    noise_twoqubit_enabled: str
+    noise_twoqubit_value: str
+    config: str
 
 
 class JobFactory:

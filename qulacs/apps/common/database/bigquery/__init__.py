@@ -11,7 +11,7 @@ class BigQueryClient:
         self.client = bigquery.Client(project=project_id)
 
     def generate_table_id(
-        project_id: str, dataset: str, table: str
+        self, project_id: str, dataset: str, table: str
     ) -> bigquery.Table.table_id:
         return bigquery.Table.from_string(f"{project_id}.{dataset}.{table}")
 

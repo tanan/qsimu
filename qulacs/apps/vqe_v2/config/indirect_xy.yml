@@ -30,3 +30,5 @@ gate:
 gcp:
   project:
     id: "anan-project"
+  bigquery:
+    import: False

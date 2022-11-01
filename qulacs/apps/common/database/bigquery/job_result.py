@@ -2,15 +2,15 @@ from google.cloud import bigquery
 from common.database.bigquery import BigQueryClient
 from common.database.schema.job import Job
 
-dataset = "vqe"
-table = "job_result"
+DATASET = "vqe"
+TABLE = "job_result"
 
 
 def create_job_result_table(client: BigQueryClient) -> None:
     schema = [
         bigquery.SchemaField("id", "STRING", mode="REQUIRED"),
         bigquery.SchemaField("creation_time", "DATETIME"),
-        bigquery.SchemaField("execution_second", "INTEGER"),
+        bigquery.SchemaField("execution_second", "FLOAT64"),
         bigquery.SchemaField("nqubit", "INTEGER"),
         bigquery.SchemaField("depth", "INTEGER"),
         bigquery.SchemaField("gate_type", "STRING"),
@@ -30,21 +30,23 @@ def create_job_result_table(client: BigQueryClient) -> None:
         bigquery.SchemaField("cost_history", "STRING"),
         bigquery.SchemaField("parameter_history", "STRING"),
         bigquery.SchemaField("iteration_history", "STRING"),
-        bigquery.SchemaField("noise_singlequbit_enabled", "STRING"),
+        bigquery.SchemaField("noise_singlequbit_enabled", "BOOL"),
         bigquery.SchemaField("noise_singlequbit_value", "STRING"),
-        bigquery.SchemaField("noise_twoqubit_enabled", "STRING"),
+        bigquery.SchemaField("noise_twoqubit_enabled", "BOOL"),
         bigquery.SchemaField("noise_twoqubit_value", "STRING"),
         bigquery.SchemaField("config", "STRING"),
     ]
-    table = client.create_table(dataset, table, schema)
+    table = client.create_table(DATASET, TABLE, schema)
     print(
         "Created table {}.{}.{}".format(table.project, table.dataset_id, table.table_id)
     )
 
 
 def insert_job_result(client: BigQueryClient, job: Job) -> None:
-    errors = client.insert_rows(dataset, table, [vars(job)])
+    row = vars(job)  ## convert dict type
+    row["creation_time"] = row["creation_time"].strftime("%Y-%m-%d %H:%M:%S") ## convert to str from datetime
+    errors = client.insert_rows(DATASET, TABLE, [row])
     if errors == []:
         print("New rows have been added.")
-    else:
-        print("Encountered errors while inserting rows: {}".format(errors))
+    # else:
+    #     print("Encountered errors while inserting rows: {}".format(errors))

@@ -5,8 +5,6 @@ import yaml
 import time
 import datetime
 import numpy as np
-from common.database.bigquery import BigQueryClient
-from common.database.bigquery.job_result import insert_job_result
 
 from random_list import randomize
 from hamiltonian import create_ising_hamiltonian
@@ -24,6 +22,8 @@ from common.ansatz.direct import DirectAnsatz
 from common.optimizer import OptimizerStatus
 from common.optimizer.adam import Adam
 from common.database.schema.job import JobFactory
+from common.database.bigquery import BigQueryClient
+from common.database.bigquery.job_result import insert_job_result
 
 ## init variables
 qulacs_hamiltonian = None
@@ -216,8 +216,9 @@ def run(config):
     )
     client = DBClient("data/job_results.sqlite3")
     client.insertJob(job)
-    bqClient = BigQueryClient(config["gcp"]["project"]["id"])
-    insert_job_result(bqClient, job)
+    if config["gcp"]["bigquery"]["import"]:
+        bqClient = BigQueryClient(config["gcp"]["project"]["id"])
+        insert_job_result(bqClient, job)
     # output(param_history, cost_history, iter_history)
     # np.savetxt('data/xy_params.txt', param_history[-1])
     img = circuit_drawer(ansatz.create_ansatz(init_random_list), "latex")
