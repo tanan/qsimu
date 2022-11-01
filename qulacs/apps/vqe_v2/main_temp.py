@@ -115,7 +115,7 @@ def run(config):
     ## randomize and create constraints
     init_random_list, bounds = randomize(config["nqubit"], config)
     circuit = ansatz.create_ansatz(init_random_list)
-    circuit_drawer(circuit, 'mpl')
+    circuit_drawer(circuit, "mpl")
 
 
 def start(config):

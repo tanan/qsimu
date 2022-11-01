@@ -13,6 +13,7 @@ def create_ising_hamiltonian(nqubit):
     #     transverse_Ising_hamiltonian.add_operator(h, f"X {i}")
     # return transverse_Ising_hamiltonian
 
+
 def create_qubit_operator(nqubit):
     hami = QubitOperator()
     for i in range(nqubit):

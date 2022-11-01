@@ -1,4 +1,3 @@
-import sys
 import numpy as np
 from qulacs import QuantumCircuit
 from qulacs.gate import (
@@ -82,26 +81,26 @@ class XYAnsatz(Ansatz):
                     TwoQubitDepolarizingNoise(0, 1, self.noise["twoqubit"]["value"])
                 )
 
-            if self.bn["type"] == "random":
-                circuit = self.add_parametric_rotation_gate(
-                    circuit,
-                    random_list[
-                        self.depth
-                        + (self.depth * self.nqubit)
-                        + (self.gate_set * d) : self.depth
-                        + (self.depth * self.nqubit)
-                        + (self.gate_set * d)
-                        + 4
-                    ],
-                )
+            # if self.bn["type"] == "random":
+            #     circuit = self.add_parametric_rotation_gate(
+            #         circuit,
+            #         random_list[
+            #             self.depth
+            #             + (self.depth * self.nqubit)
+            #             + (self.gate_set * d) : self.depth
+            #             + (self.depth * self.nqubit)
+            #             + (self.gate_set * d)
+            #             + 4
+            #         ],
+            #     )
 
-                ## When bn is random, recalculate daig and eigen_vecs so that the calculated values in advance can not use.
-                self.diag, self.eigen_vecs = self.create_hamiltonian(
-                    [1] * self.nqubit,
-                    random_list[d + self.depth : d + self.depth + self.nqubit],
-                    self.gamma,
-                )
-                circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+            #     ## When bn is random, recalculate daig and eigen_vecs so that the calculated values in advance can not use.
+            #     self.diag, self.eigen_vecs = self.create_hamiltonian(
+            #         [1] * self.nqubit,
+            #         random_list[d + self.depth : d + self.depth + self.nqubit],
+            #         self.gamma,
+            #     )
+            #     circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
 
             if self.time["type"] == "random":
                 circuit = self.add_parametric_rotation_gate(

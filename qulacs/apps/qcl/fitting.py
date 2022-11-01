@@ -134,6 +134,7 @@ def create_U_time(nqubit, ansatz, time_step):
     else:
         return ansatz.create_hamiltonian_gate(time_step)
 
+
 def cost(random_list):
     global nqubit
     global x_train
@@ -145,9 +146,7 @@ def cost(random_list):
 
     U_time = create_U_time(nqubit, ansatz, time_step)
 
-    y_pred = np.array([
-        qcl_pred(nqubit, x, U_time, U_out) for x in x_train
-    ])
+    y_pred = np.array([qcl_pred(nqubit, x, U_time, U_out) for x in x_train])
     L = ((y_pred - y_train) ** 2).mean()
     return L
 
@@ -157,14 +156,16 @@ def create_graph(x_train, y_init, y_teacher, y_pred, name, nqubit, depth):
     plt.plot(x_train, y_teacher[0], ".", label="Teacher[0]")
     plt.plot(x_train, y_teacher[1], ".", label="Teacher[1]")
     plt.plot(x_train, y_teacher[2], ".", label="Teacher[2]")
-    plt.plot(x_train, y_init[0], 'o', label='Initial Model Prediction[0]')
-    plt.plot(x_train, y_init[1], 'o', label='Initial Model Prediction[1]')
-    plt.plot(x_train, y_init[2], 'o', label='Initial Model Prediction[2]')
-    plt.plot(x_train, y_pred[0], '--', label='Final Model Prediction[0]')
-    plt.plot(x_train, y_pred[1], '--', label='Final Model Prediction[1]')
-    plt.plot(x_train, y_pred[2], '--', label='Final Model Prediction[2]')
+    plt.plot(x_train, y_init[0], "o", label="Initial Model Prediction[0]")
+    plt.plot(x_train, y_init[1], "o", label="Initial Model Prediction[1]")
+    plt.plot(x_train, y_init[2], "o", label="Initial Model Prediction[2]")
+    plt.plot(x_train, y_pred[0], "--", label="Final Model Prediction[0]")
+    plt.plot(x_train, y_pred[1], "--", label="Final Model Prediction[1]")
+    plt.plot(x_train, y_pred[2], "--", label="Final Model Prediction[2]")
     plt.legend()
-    plt.savefig(f"./image/hamiltonian-{name}-{nqubit}-{depth}-{datetime.now().strftime('%Y%m%d%H%M')}")
+    plt.savefig(
+        f"./image/hamiltonian-{name}-{nqubit}-{depth}-{datetime.now().strftime('%Y%m%d%H%M')}"
+    )
     # plt.show()
 
 
@@ -173,11 +174,10 @@ def create_y(nqubit, ansatz, time_step, xs, params):
 
     U_time = create_U_time(nqubit, ansatz, time_step)
 
-    y_pred = np.array([
-        qcl_pred(nqubit, x, U_time, U_out) for x in xs
-    ])
+    y_pred = np.array([qcl_pred(nqubit, x, U_time, U_out) for x in xs])
 
     return y_pred
+
 
 if __name__ == "__main__":
     args = sys.argv
@@ -196,9 +196,17 @@ if __name__ == "__main__":
 
     random_list, bounds = randomize(nqubit, config)
     y_init = create_y(nqubit, ansatz, time_step, x_train, random_list)
-    
+
     result = minimize(cost, random_list, method="BFGS")
     # print(result)
     y_pred = create_y(nqubit, ansatz, time_step, x_train, result.x)
-    
-    create_graph(x_train, y_init.T, y_train.T, y_pred.T, ansatz.ansatz_type.name, config['nqubit'], config['depth'])
+
+    create_graph(
+        x_train,
+        y_init.T,
+        y_train.T,
+        y_pred.T,
+        ansatz.ansatz_type.name,
+        config["nqubit"],
+        config["depth"],
+    )

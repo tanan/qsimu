@@ -6,6 +6,7 @@ from typing import Any
 import numpy as np
 from qulacs.gate import DenseMatrix
 
+
 class AnsatzType(Enum):
     DIRECT = 1
     INDIRECT_ISING = 2

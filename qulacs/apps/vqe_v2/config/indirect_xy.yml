@@ -4,14 +4,14 @@ gate:
   type: "indirect_xy"
   parametric_rotation_gate_set: 4
   constraints: False
-  bounds: True
+  bounds: False
   noise:
     singlequbit:
       enabled: False
       value: None
     twoqubit:
-      enabled: False
-      value: None
+      enabled: True
+      value: 0.001
   time:
     type: "random"
     min_val: -3
