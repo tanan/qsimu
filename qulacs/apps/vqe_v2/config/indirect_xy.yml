@@ -10,8 +10,8 @@ gate:
       enabled: False
       value: None
     twoqubit:
-      enabled: True
-      value: 0.001
+      enabled: False
+      value: None
   time:
     type: "random"
     min_val: -3
@@ -27,3 +27,6 @@ gate:
   r:
     type: "static"
     value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+gcp:
+  project:
+    id: "anan-project"
