@@ -9,7 +9,6 @@ import numpy as np
 from random_list import randomize
 from hamiltonian import create_ising_hamiltonian
 from constraints import create_time_constraints
-from dbclient import DBClient
 from qulacs import QuantumState, QuantumCircuit
 from qulacsvis import circuit_drawer
 from scipy.optimize import minimize
@@ -24,6 +23,8 @@ from common.optimizer.adam import Adam
 from common.database.schema.job import JobFactory
 from common.database.bigquery import BigQueryClient
 from common.database.bigquery.job_result import insert_job_result
+from common.database.sqlite import DBClient
+import common.database.sqlite.job as sqlitejob
 
 ## init variables
 qulacs_hamiltonian = None
@@ -215,7 +216,7 @@ def run(config):
         now, start_time, end_time, cost_history, param_history, iter_history
     )
     client = DBClient("data/job_results.sqlite3")
-    client.insertJob(job)
+    sqlitejob.insert_job(client, job)
     if config["gcp"]["bigquery"]["import"]:
         bqClient = BigQueryClient(config["gcp"]["project"]["id"])
         insert_job_result(bqClient, job)
