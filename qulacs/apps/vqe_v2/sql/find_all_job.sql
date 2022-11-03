@@ -20,5 +20,10 @@ SELECT
   iteration,
   cost_history,
   parameter_history,
-  iteration_history
+  iteration_history,
+  noise_singlequbit_enabled,
+  noise_singlequbit_value,
+  noise_twoqubit_enabled,
+  noise_twoqubit_value,
+  config
 FROM jobs

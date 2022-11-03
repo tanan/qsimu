@@ -2,6 +2,7 @@
 Constant types in Python.
 """
 
+
 class _const:
     class ConstError(TypeError):
         pass
@@ -11,5 +12,7 @@ class _const:
             raise self.ConstError("Can't rebind const (%s)" % name)
         self.__dict__[name] = value
 
+
 import sys
-sys.modules[__name__]=_const()
+
+sys.modules[__name__] = _const()

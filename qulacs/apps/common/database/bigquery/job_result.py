@@ -1,6 +1,9 @@
 from google.cloud import bigquery
+from typing import Any
+from collections.abc import Sequence
 from common.database.bigquery import BigQueryClient
 from common.database.schema.job import Job
+from common.database.bigquery.sql.find_job import sql_for_find_job
 
 DATASET = "vqe"
 TABLE = "job_result"
@@ -44,9 +47,28 @@ def create_job_result_table(client: BigQueryClient) -> None:
 
 def insert_job_result(client: BigQueryClient, job: Job) -> None:
     row = vars(job)  ## convert dict type
-    row["creation_time"] = row["creation_time"].strftime("%Y-%m-%d %H:%M:%S") ## convert to str from datetime
+    row["creation_time"] = row["creation_time"].strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )  ## convert to str from datetime
     errors = client.insert_rows(DATASET, TABLE, [row])
     if errors == []:
         print("New rows have been added.")
     # else:
     #     print("Encountered errors while inserting rows: {}".format(errors))
+
+
+def find_job_result(
+    client: BigQueryClient, filter: str = None
+) -> Sequence[dict[str, Any]]:
+    """
+    Find job results of vqe expectation.
+
+    Params are configured following values.
+
+        client: A client to connect and operate BigQuery.
+        filter: sql phrase to filter records. It excludes `filter`.
+    """
+    if filter is None:
+        return client.client.query(sql_for_find_job())
+    else:
+        return client.client.query("{} WHERE {}".format(sql_for_find_job(), filter))

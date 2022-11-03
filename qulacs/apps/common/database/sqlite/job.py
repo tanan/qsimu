@@ -4,6 +4,7 @@ from common.database.sqlite.sql.create_table_job import sql_for_create_table
 from common.database.sqlite.sql.insert_job import sql_for_insert_job
 from pathlib import Path
 
+
 def create_job_table(client: DBClient, force: bool = False) -> None:
     cur = client.conn.cursor()
     if force:
