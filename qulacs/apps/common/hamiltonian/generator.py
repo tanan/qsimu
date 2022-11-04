@@ -1,12 +1,12 @@
 from functools import cached_property
 from typing import Iterable, Tuple
-from qulacs import QuantumCircuit
-from qulacs.gate import DenseMatrix
 
 import numpy as np
-
 from common.hamiltonian import Coefficients, Hamiltonian, HamiltonianModel
 from common.hamiltonian.ising import create_ising_hamiltonian
+from qulacs.gate import DenseMatrix
+
+from qulacs import QuantumCircuit
 
 
 class _Hamiltonian:

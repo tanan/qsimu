@@ -1,5 +1,4 @@
 import numpy as np
-
 from common.ansatz.pauli_gate import PauliGate
 from common.hamiltonian import Coefficients
 

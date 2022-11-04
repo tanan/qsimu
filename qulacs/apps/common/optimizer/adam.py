@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-import numpy as np
 from typing import Callable, Optional
 
+import numpy as np
 from common.optimizer import OptimizerState, OptimizerStatus
+
 from .tolerance import ftol as create_ftol
 
 _const_zero_array = np.zeros(0, dtype=float)

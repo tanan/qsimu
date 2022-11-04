@@ -1,10 +1,12 @@
 from mimetypes import init
-import qulacs
-from qulacs import QuantumCircuit
-from qulacs.gate import CNOT, CZ, RX, RY, RZ, merge, DenseMatrix
+
 import numpy as np
+from qulacs.gate import CNOT, CZ, RX, RY, RZ, DenseMatrix, merge
 from scipy import sparse
 from scipy.sparse.linalg import expm
+
+import qulacs
+from qulacs import QuantumCircuit
 
 
 class AnsatzDirect:

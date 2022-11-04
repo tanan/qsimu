@@ -1,6 +1,7 @@
+from collections.abc import Sequence
 from email.policy import strict
 from typing import Any
-from collections.abc import Sequence
+
 from google.cloud import bigquery
 
 

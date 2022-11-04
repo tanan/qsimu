@@ -1,6 +1,7 @@
 import sys
-from openfermion.ops import QubitOperator
+
 from openfermion.linalg import eigenspectrum
+from openfermion.ops import QubitOperator
 
 
 def create_qubit_operator(nqubit):

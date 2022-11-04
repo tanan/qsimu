@@ -1,7 +1,7 @@
+from dataclasses import dataclass
 from enum import Enum, auto
 
 import numpy as np
-from dataclasses import dataclass
 
 
 class OptimizerStatus(Enum):

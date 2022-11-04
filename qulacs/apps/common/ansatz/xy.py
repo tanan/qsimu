@@ -1,13 +1,8 @@
 import numpy as np
+from qulacs.gate import (CNOT, RY, RZ, DepolarizingNoise,
+                         TwoQubitDepolarizingNoise, merge)
+
 from qulacs import QuantumCircuit
-from qulacs.gate import (
-    CNOT,
-    RY,
-    RZ,
-    merge,
-    DepolarizingNoise,
-    TwoQubitDepolarizingNoise,
-)
 
 from .ansatz import Ansatz, AnsatzType, ParametricGateCountError
 from .pauli_gate import PauliGate

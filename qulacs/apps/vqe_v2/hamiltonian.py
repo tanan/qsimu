@@ -1,6 +1,7 @@
 from openfermion.ops import QubitOperator
-from qulacs import Observable
 from qulacs.observable import create_observable_from_openfermion_text
+
+from qulacs import Observable
 
 
 def create_ising_hamiltonian(nqubit):

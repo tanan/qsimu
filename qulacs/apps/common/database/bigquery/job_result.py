@@ -1,9 +1,10 @@
-from google.cloud import bigquery
-from typing import Any
 from collections.abc import Sequence
+from typing import Any
+
 from common.database.bigquery import BigQueryClient
-from common.database.schema.job import Job
 from common.database.bigquery.sql.find_job import sql_for_find_job
+from common.database.schema.job import Job
+from google.cloud import bigquery
 
 DATASET = "vqe"
 TABLE = "job_result"

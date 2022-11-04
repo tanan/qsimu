@@ -1,8 +1,7 @@
-from abc import ABCMeta
-
 from abc import ABCMeta, abstractmethod
 from enum import Enum
 from typing import Any
+
 import numpy as np
 from qulacs.gate import DenseMatrix
 

@@ -1,7 +1,10 @@
 import sys
+
 import numpy as np
+from qulacs.gate import (CZ, RY, RZ, DepolarizingNoise,
+                         TwoQubitDepolarizingNoise, merge)
+
 from qulacs import QuantumCircuit
-from qulacs.gate import CZ, RY, RZ, merge, DepolarizingNoise, TwoQubitDepolarizingNoise
 
 sys.path.append("..")
 from .ansatz import Ansatz, AnsatzType

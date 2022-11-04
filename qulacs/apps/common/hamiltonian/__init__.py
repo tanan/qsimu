@@ -1,10 +1,10 @@
 from abc import abstractproperty
+from collections.abc import Iterable
 from enum import Enum
 from typing import Callable, Protocol, Tuple, Union
-from typing_extensions import TypeAlias
-from collections.abc import Iterable
 
 import numpy as np
+from typing_extensions import TypeAlias
 
 
 class Hamiltonian(Protocol):

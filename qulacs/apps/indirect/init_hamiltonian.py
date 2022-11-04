@@ -1,5 +1,5 @@
-from qulacs.observable import create_observable_from_openfermion_text
 from openfermion.ops import QubitOperator
+from qulacs.observable import create_observable_from_openfermion_text
 
 # from openfermion.chem import MolecularData
 # from openfermionpsi4 import run_psi4
