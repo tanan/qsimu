@@ -1,8 +1,7 @@
 import sys
 
 import numpy as np
-from qulacs.gate import (CZ, RY, RZ, DepolarizingNoise,
-                         TwoQubitDepolarizingNoise, merge)
+from qulacs.gate import CZ, RY, RZ, DepolarizingNoise, TwoQubitDepolarizingNoise, merge
 
 from qulacs import QuantumCircuit
 
