@@ -136,6 +136,10 @@ def _convert_result_by_time_to_dict(config, cost_list, iter_list):
         },
     }
 
+def _sort_summary(summary: Sequence[dict[str, Any]]) -> Sequence[dict[str, Any]]:
+    return sorted(summary, key=lambda x: x["depth"])
+
+
 
 def summary_job_result_by_time(
     jobs: Sequence[dict[str, Any]]
@@ -164,7 +168,7 @@ def summary_job_result_by_time(
 
         summary.append(_convert_result_by_time_to_dict(config, cost_list, iter_list))
 
-    return summary
+    return _sort_summary(summary)
 
 
 # def getResult(
