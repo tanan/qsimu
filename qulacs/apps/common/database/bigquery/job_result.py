@@ -70,6 +70,42 @@ def find_job_result(
         filter: sql phrase to filter records. It excludes `filter`.
     """
     if filter is None:
-        return client.client.query(sql_for_find_job())
+        jobs = client.client.query(sql_for_find_job(client.project_id, DATASET))
     else:
-        return client.client.query("{} WHERE {}".format(sql_for_find_job(), filter))
+        jobs = client.client.query(
+            "{} WHERE {}".format(sql_for_find_job(client.project_id, DATASET), filter)
+        )
+
+    return _convert_queryjob_into_dict(jobs)
+
+
+def _convert_queryjob_into_dict(jobs: Any) -> Sequence[dict[str, Any]]:
+    rows = []
+    for job in jobs:
+        row = {}
+        row["creation_time"] = job["creation_time"]
+        row["execution_second"] = job["execution_second"]
+        row["nqubit"] = job["nqubit"]
+        row["depth"] = job["depth"]
+        row["gate_type"] = job["gate_type"]
+        row["gate_set"] = job["gate_set"]
+        row["bn_type"] = job["bn_type"]
+        row["bn_range"] = job["bn_range"]
+        row["bn"] = job["bn"]
+        row["cn"] = job["cn"]
+        row["r"] = job["r"]
+        row["t_type"] = job["t_type"]
+        row["max_time"] = job["max_time"]
+        row["min_time"] = job["min_time"]
+        row["t"] = job["t"]
+        row["cost"] = job["cost"]
+        row["parameter"] = job["parameter"]
+        row["iteration"] = job["iteration"]
+        row["noise_singlequbit_enabled"] = job["noise_singlequbit_enabled"]
+        row["noise_singlequbit_value"] = job["noise_singlequbit_value"]
+        row["noise_twoqubit_enabled"] = job["noise_twoqubit_enabled"]
+        row["noise_twoqubit_value"] = job["noise_twoqubit_value"]
+        row["constraints"] = job["constraints"]
+        row["bounds"] = job["bounds"]
+        rows.append(row)
+    return rows

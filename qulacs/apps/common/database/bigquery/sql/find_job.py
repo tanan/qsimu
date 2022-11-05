@@ -1,5 +1,5 @@
-def sql_for_find_job() -> str:
-    return """
+def sql_for_find_job(project_id: str, dataset: str) -> str:
+    return f"""
         SELECT
             id,
             creation_time,
@@ -20,13 +20,11 @@ def sql_for_find_job() -> str:
             cost,
             parameter,
             iteration,
-            cost_history,
-            parameter_history,
-            iteration_history,
             noise_singlequbit_enabled,
             noise_singlequbit_value,
             noise_twoqubit_enabled,
             noise_twoqubit_value,
-            config
-        FROM jobs
+            json_extract(config, "$.gate.constraints") as constraints,
+            json_extract(config, "$.gate.bounds") as bounds
+        FROM {project_id}.{dataset}.job_result
     """
