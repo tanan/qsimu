@@ -18,8 +18,7 @@ from common.ansatz.xy import XYAnsatz
 from common.estimator import Observables
 from common.estimator.hamiltonian import create_hamiltonian_estimator
 from common.hamiltonian import HamiltonianModel
-from common.hamiltonian.generator import \
-    create_transverse_ising_hamiltonian_generator
+from common.hamiltonian.generator import create_transverse_ising_hamiltonian_generator
 from common.random_list import randomize
 
 ########  パラメータ  #############
