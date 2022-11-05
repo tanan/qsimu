@@ -10,8 +10,12 @@ import yaml
 
 sys.path.append("..")
 from scipy.optimize import minimize
-from vqe_ising.ansatz import (AnsatzDirect, AnsatzIndirectByIsing,
-                              AnsatzIndirectByXY, AnsatzIndirectByXYZ)
+from vqe_ising.ansatz import (
+    AnsatzDirect,
+    AnsatzIndirectByIsing,
+    AnsatzIndirectByXY,
+    AnsatzIndirectByXYZ,
+)
 from vqe_ising.constraints import create_time_constraints
 from vqe_ising.dbclient import DBClient
 from vqe_ising.hamiltonian import create_ising_hamiltonian
