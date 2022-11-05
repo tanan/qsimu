@@ -177,7 +177,7 @@ def run(config):
         opt = minimize(
             cost,
             init_random_list,
-            method="SLSQP",
+            method=config["optimize"]["method"],
             constraints=constraints,
             bounds=bounds,
             options=options,
@@ -187,7 +187,7 @@ def run(config):
         opt = minimize(
             cost,
             init_random_list,
-            method="SLSQP",
+            method=config["optimize"]["method"],
             options=options,
             bounds=bounds,
             callback=record,
@@ -207,7 +207,8 @@ def run(config):
         #     cost, init_random_list, jac=g_fn ,method="BFGS", options=options, callback=record
         # )
         opt = minimize(
-            cost, init_random_list, method="BFGS", options=options, callback=record
+            # cost, init_random_list, method="BFGS", options=options, callback=record
+            cost, init_random_list, method=config["optimize"]["method"], options=options, callback=record
         )
 
     end_time = time.perf_counter()
