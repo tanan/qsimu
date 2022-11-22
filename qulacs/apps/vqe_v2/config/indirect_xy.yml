@@ -1,5 +1,5 @@
 depth: 12
-nqubit: 7
+nqubit: 4
 optimize:
   method: "SLSQP"
 gate:
@@ -33,4 +33,4 @@ gcp:
   project:
     id: "anan-project"
   bigquery:
-    import: True
+    import: False
