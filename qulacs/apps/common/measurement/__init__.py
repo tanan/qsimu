@@ -2,7 +2,6 @@ from qulacs import QuantumState, QuantumCircuit
 from qulacs.gate import Measurement, DenseMatrix
 import numpy as np
 
-
 def _apply_sign_correction(circuit: QuantumCircuit, control_qubit_num: int) -> None:
     circuit.add_X_gate(control_qubit_num)
     circuit.add_Z_gate(control_qubit_num)
@@ -79,6 +78,7 @@ def exec_measurement(state: QuantumState, n_qubits: int, measurement_type: str) 
         result.append(state.get_classical_value(qubit_num))
         result.append(state.get_classical_value(qubit_num + 1))
 
+    result = [1 if i == 0 else -1 for i in result]
     return result[0:n_qubits]
 
 
@@ -88,8 +88,8 @@ def sampling_indirect_measurement(state: QuantumState, n_shots: int) -> float:
     samples_ZZ = []
     samples_XX = []
     for i in range(n_shots):
-        samples_ZZ.append(exec_measurement(state, n_qubits, "ZZ"))
-        samples_XX.append(exec_measurement(state, n_qubits, "XX"))
+        samples_ZZ.append(exec_measurement(state.copy(), n_qubits, "ZZ"))
+        samples_XX.append(exec_measurement(state.copy(), n_qubits, "XX"))
 
     # print(f"ZZ: {samples_ZZ}")
     # print(f"XX: {samples_XX}")
