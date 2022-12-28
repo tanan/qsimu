@@ -5,8 +5,8 @@ optimize:
 gate:
   type: "indirect_xy"
   parametric_rotation_gate_set: 4
-  constraints: True
-  bounds: True
+  constraints: False
+  bounds: False
   noise:
     singlequbit:
       enabled: False
@@ -16,7 +16,7 @@ gate:
       value: None
   time:
     type: "random"
-    min_val: 0
+    min_val: -3
     max_val: 3
   bn:
     # type: "static_random"

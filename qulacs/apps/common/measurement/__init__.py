@@ -45,23 +45,23 @@ def create_measurement_gate(n_qubits: int, qubit_num: int, register_address: int
     return circuit
 
 
-def _exec_XX_measurement(state: QuantumState, n_qubits: int, register_address: int) -> None:
-    create_measurement_gate(n_qubits, 0, register_address, "X").update_quantum_state(state)
-    create_measurement_gate(n_qubits, 1, register_address + 1, "X").update_quantum_state(state)
+def _exec_XX_measurement(state: QuantumState, n_qubits: int) -> None:
+    create_measurement_gate(n_qubits, 0, 0, "X").update_quantum_state(state)
+    create_measurement_gate(n_qubits, 1, 1, "X").update_quantum_state(state)
 
 
-def _exec_ZZ_measurement(state: QuantumState, n_qubits: int, register_address: int):
-    create_measurement_gate(n_qubits, 0, register_address, "Z").update_quantum_state(state)
-    create_measurement_gate(n_qubits, 1, register_address + 1, "Z").update_quantum_state(state)
+def _exec_ZZ_measurement(state: QuantumState, n_qubits: int):
+    create_measurement_gate(n_qubits, 0, 0, "Z").update_quantum_state(state)
+    create_measurement_gate(n_qubits, 1, 1, "Z").update_quantum_state(state)
 
 
 def exec_measurement(state: QuantumState, n_qubits: int, measurement_type: str) -> list[int]:
     result = []
     qubit_num = 0
     if measurement_type == "ZZ":
-        _exec_ZZ_measurement(state, n_qubits, qubit_num)
+        _exec_ZZ_measurement(state, n_qubits)
     else:
-        _exec_XX_measurement(state, n_qubits, qubit_num)
+        _exec_XX_measurement(state, n_qubits)
     result.append(state.get_classical_value(qubit_num))
     result.append(state.get_classical_value(qubit_num + 1))
 
@@ -72,11 +72,11 @@ def exec_measurement(state: QuantumState, n_qubits: int, measurement_type: str) 
 
         qubit_num += 2
         if measurement_type == "ZZ":
-            _exec_ZZ_measurement(state, n_qubits, qubit_num)
+            _exec_ZZ_measurement(state, n_qubits)
         else:
-            _exec_XX_measurement(state, n_qubits, qubit_num)
-        result.append(state.get_classical_value(qubit_num))
-        result.append(state.get_classical_value(qubit_num + 1))
+            _exec_XX_measurement(state, n_qubits)
+        result.append(state.get_classical_value(0))
+        result.append(state.get_classical_value(1))
 
     result = [1 if i == 0 else -1 for i in result]
     return result[0:n_qubits]
@@ -91,8 +91,6 @@ def sampling_indirect_measurement(state: QuantumState, n_shots: int) -> float:
         samples_ZZ.append(exec_measurement(state.copy(), n_qubits, "ZZ"))
         samples_XX.append(exec_measurement(state.copy(), n_qubits, "XX"))
 
-    # print(f"ZZ: {samples_ZZ}")
-    # print(f"XX: {samples_XX}")
     # X1X2 など成分ごとの合計 / n_shots で平均値を計算
     estimates_ZZ = []
     estimates_XX = []
@@ -102,8 +100,6 @@ def sampling_indirect_measurement(state: QuantumState, n_shots: int) -> float:
         estimates_ZZ.append((left * right).sum(dtype='float') / n_shots)
 
     estimates_XX = np.sum(samples_XX, axis=0, dtype='float') / n_shots
-    # print(f"ZZ: {estimates_ZZ}")
-    # print(f"XX: {estimates_XX}")
 
     # calculate the results of X1X2 + X2X3 + X3X4 + X4X5 + X5X6 + Z1 + Z2 + Z3 + ...
     expectation_value = np.sum(estimates_ZZ, dtype='float') + np.sum(estimates_XX, dtype='float')
