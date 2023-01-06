@@ -34,7 +34,7 @@ def randomize(nqubit, config):
         init_random_list = generate_random_time(
             config["gate"]["time"]["min_val"],
             config["gate"]["time"]["max_val"],
-            config["depth"],
+            config["depth"] + 1,
         )
 
     ## init bn if type is random

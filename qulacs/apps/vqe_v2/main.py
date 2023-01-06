@@ -5,7 +5,6 @@ import time
 
 import numpy as np
 import yaml
-from constraints import create_time_constraints
 from hamiltonian import create_ising_hamiltonian
 from qulacsvis import circuit_drawer
 from random_list import randomize
@@ -20,6 +19,7 @@ from common.ansatz.direct import DirectAnsatz
 from common.ansatz.ising import IsingAnsatz
 from common.ansatz.xy import XYAnsatz
 from common.ansatz.xyz import XYZAnsatz
+from common.constraints import create_time_constraints
 from common.database.bigquery import BigQueryClient
 from common.database.bigquery.job_result import insert_job_result
 from common.database.schema.job import JobFactory
@@ -175,7 +175,7 @@ def run(config):
     ## calculation
     options = {"maxiter": 1000}
     if config["gate"]["constraints"]:
-        constraints = create_time_constraints(config["depth"], len(init_random_list))
+        constraints = create_time_constraints(config["depth"]+1, len(init_random_list))
         opt = minimize(
             cost,
             init_random_list,

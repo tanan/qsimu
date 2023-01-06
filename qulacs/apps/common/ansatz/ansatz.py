@@ -35,9 +35,9 @@ class Ansatz(metaclass=ABCMeta):
     def create_hamiltonian(self, cn, bn=None, gamma=None):
         pass
 
-    def create_hamiltonian_gate(self, t):
+    def create_hamiltonian_gate(self, t_after, t_before):
         time_evol_op = np.dot(
-            np.dot(self.eigen_vecs, np.diag(np.exp(-1j * t * self.diag))),
+            np.dot(self.eigen_vecs, np.diag(np.exp(-1j * (t_after - t_before) * self.diag))),
             self.eigen_vecs.T.conj(),
         )
         return DenseMatrix([i for i in range(self.nqubit)], time_evol_op)

@@ -82,39 +82,18 @@ class XYAnsatz(Ansatz):
                     TwoQubitDepolarizingNoise(0, 1, self.noise["twoqubit"]["value"])
                 )
 
-            # if self.bn["type"] == "random":
-            #     circuit = self.add_parametric_rotation_gate(
-            #         circuit,
-            #         random_list[
-            #             self.depth
-            #             + (self.depth * self.nqubit)
-            #             + (self.gate_set * d) : self.depth
-            #             + (self.depth * self.nqubit)
-            #             + (self.gate_set * d)
-            #             + 4
-            #         ],
-            #     )
-
-            #     ## When bn is random, recalculate daig and eigen_vecs so that the calculated values in advance can not use.
-            #     self.diag, self.eigen_vecs = self.create_hamiltonian(
-            #         [1] * self.nqubit,
-            #         random_list[d + self.depth : d + self.depth + self.nqubit],
-            #         self.gamma,
-            #     )
-            #     circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
-
             if self.time["type"] == "random":
                 circuit = self.add_parametric_rotation_gate(
                     circuit,
                     random_list[
-                        self.depth
-                        + (self.gate_set * d) : self.depth
+                        self.depth + 1
+                        + (self.gate_set * d) : self.depth + 1
                         + (self.gate_set * d)
                         + 4
                     ],
                 )
 
-                circuit.add_gate(self.create_hamiltonian_gate(random_list[d]))
+                circuit.add_gate(self.create_hamiltonian_gate(random_list[d], random_list[d+1]))
             else:
                 circuit = self.add_parametric_rotation_gate(
                     circuit,
@@ -122,7 +101,7 @@ class XYAnsatz(Ansatz):
                 )
 
                 ## When time is static, get time from static array.
-                circuit.add_gate(self.create_hamiltonian_gate(self.time["value"][d]))
+                circuit.add_gate(self.create_hamiltonian_gate(self.time["value"][d], self.time["value"][d+1]))
 
         return circuit
 
