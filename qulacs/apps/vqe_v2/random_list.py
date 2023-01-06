@@ -60,8 +60,8 @@ def randomize(nqubit, config):
 
 
 def get_bounds(nqubit, config):
-    t_min = np.array([config["gate"]["time"]["min_val"]] * config["depth"])
-    t_max = np.array([config["gate"]["time"]["max_val"]] * config["depth"])
+    t_min = np.array([config["gate"]["time"]["min_val"]] * (config["depth"]+1))
+    t_max = np.array([config["gate"]["time"]["max_val"]] * (config["depth"]+1))
     bn_min = np.array([0.0] * config["depth"] * nqubit)
     bn_max = np.array([1.0] * config["depth"] * nqubit)
     theta_min = np.array(

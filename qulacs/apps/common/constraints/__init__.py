@@ -28,5 +28,4 @@ def create_time_constraints(time_params_length, all_params_length):
     matrix = np.hstack(
         (matrix.reshape(time_params_length, time_params_length), np.zeros((time_params_length, all_params_length - time_params_length)))
     )
-    print(matrix)
     return LinearConstraint(matrix, 0, np.inf)
