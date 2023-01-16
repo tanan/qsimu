@@ -25,6 +25,8 @@ def sql_for_find_job(project_id: str, dataset: str) -> str:
             noise_twoqubit_enabled,
             noise_twoqubit_value,
             json_extract(config, "$.gate.constraints") as constraints,
-            json_extract(config, "$.gate.bounds") as bounds
+            json_extract(config, "$.gate.bounds") as bounds,
+            json_extract(config, "$.gate.time.evol") as t_evol,
+            config
         FROM {project_id}.{dataset}.job_result
     """

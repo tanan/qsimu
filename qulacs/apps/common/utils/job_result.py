@@ -27,6 +27,8 @@ def _distinct_dict_value(jobs: Sequence[dict[str, Any]]) -> dict[str, iter]:
     config["noise_twoqubit_value"] = set(job["noise_twoqubit_value"] for job in jobs)
     config["constraints"] = set(job["constraints"] for job in jobs)
     config["bounds"] = set(job["bounds"] for job in jobs)
+    # set only in a config column.
+    config["t_evol"] = set(job["t_evol"] for job in jobs)
     return config
 
 
@@ -48,23 +50,25 @@ def _generate_all_config_combinations_for_time_summary(
                                 ]:
                                     for constraints in config["constraints"]:
                                         for bounds in config["bounds"]:
+                                            for t_evol in config["t_evol"]:
 
-                                            val = {}
-                                            val["nqubit"] = nqubit
-                                            val["gate_type"] = gate_type
-                                            val["depth"] = depth
-                                            val["t_type"] = t_type
-                                            val["min_time"] = min_time
-                                            val["max_time"] = max_time
-                                            val[
-                                                "noise_singlequbit_value"
-                                            ] = noise_singlequbit_value
-                                            val[
-                                                "noise_twoqubit_value"
-                                            ] = noise_twoqubit_value
-                                            val["constraints"] = constraints
-                                            val["bounds"] = bounds
-                                            combinations.append(val)
+                                                val = {}
+                                                val["nqubit"] = nqubit
+                                                val["gate_type"] = gate_type
+                                                val["depth"] = depth
+                                                val["t_type"] = t_type
+                                                val["min_time"] = min_time
+                                                val["max_time"] = max_time
+                                                val[
+                                                    "noise_singlequbit_value"
+                                                ] = noise_singlequbit_value
+                                                val[
+                                                    "noise_twoqubit_value"
+                                                ] = noise_twoqubit_value
+                                                val["constraints"] = constraints
+                                                val["bounds"] = bounds
+                                                val["t_evol"] = t_evol
+                                                combinations.append(val)
     return combinations
 
 
@@ -73,30 +77,33 @@ def _filter_job(
 ) -> Sequence[dict[str, Any]]:
     return list(
         filter(
-            lambda x: x["bounds"] == config["bounds"],
+            lambda x: x["t_evol"] == config["t_evol"],
             filter(
-                lambda x: x["constraints"] == config["constraints"],
+                lambda x: x["bounds"] == config["bounds"],
                 filter(
-                    lambda x: x["noise_twoqubit_value"]
-                    == config["noise_twoqubit_value"],
+                    lambda x: x["constraints"] == config["constraints"],
                     filter(
-                        lambda x: x["noise_singlequbit_value"]
-                        == config["noise_singlequbit_value"],
+                        lambda x: x["noise_twoqubit_value"]
+                        == config["noise_twoqubit_value"],
                         filter(
-                            lambda x: x["max_time"] == config["max_time"],
+                            lambda x: x["noise_singlequbit_value"]
+                            == config["noise_singlequbit_value"],
                             filter(
-                                lambda x: x["min_time"] == config["min_time"],
+                                lambda x: x["max_time"] == config["max_time"],
                                 filter(
-                                    lambda x: x["t_type"] == config["t_type"],
+                                    lambda x: x["min_time"] == config["min_time"],
                                     filter(
-                                        lambda x: x["depth"] == config["depth"],
+                                        lambda x: x["t_type"] == config["t_type"],
                                         filter(
-                                            lambda x: x["gate_type"]
-                                            == config["gate_type"],
+                                            lambda x: x["depth"] == config["depth"],
                                             filter(
-                                                lambda x: x["nqubit"]
-                                                == config["nqubit"],
-                                                jobs,
+                                                lambda x: x["gate_type"]
+                                                == config["gate_type"],
+                                                filter(
+                                                    lambda x: x["nqubit"]
+                                                    == config["nqubit"],
+                                                    jobs,
+                                                ),
                                             ),
                                         ),
                                     ),
@@ -105,7 +112,7 @@ def _filter_job(
                         ),
                     ),
                 ),
-            ),
+            )
         )
     )
 
@@ -122,6 +129,7 @@ def _convert_result_by_time_to_dict(config, cost_list, iter_list):
         "noise_twoqubit_value": config["noise_twoqubit_value"],
         "constraints": config["constraints"],
         "bounds": config["bounds"],
+        "t_evol": config["t_evol"],
         "cost": {
             "min": np.min(cost_list),
             "max": np.max(cost_list),
@@ -138,7 +146,6 @@ def _convert_result_by_time_to_dict(config, cost_list, iter_list):
 
 def _sort_summary(summary: Sequence[dict[str, Any]]) -> Sequence[dict[str, Any]]:
     return sorted(summary, key=lambda x: x["depth"])
-
 
 
 def summary_job_result_by_time(
@@ -169,44 +176,3 @@ def summary_job_result_by_time(
         summary.append(_convert_result_by_time_to_dict(config, cost_list, iter_list))
 
     return _sort_summary(summary)
-
-
-# def getResult(
-#     jobs: Sequence[dict[str, Any]],
-#     nqubit: int,
-#     depth: int,
-#     method: str,
-#     bn_type: str = None,
-#     bn_range: int = None,
-#     bn_value: str = None,
-# ):
-#     ## init numpy array
-#     cost_list = np.array([])
-#     iter_list = np.array([])
-
-#     if len(jobs) == 0:
-#         return None
-
-#     for job in jobs:
-#         cost_list = np.append(cost_list, float(job["cost"]))
-#         iter_list = np.append(iter_list, float(job["iter"]))
-
-#     return {
-#         "method": method,
-#         "depth": depth,
-#         "bn_type": bn_type,
-#         "bn_range": bn_range,
-#         "bn_value": str(bn_value).strip("[").strip("]").split(",")[0],
-#         "cost": {
-#             "min": np.min(cost_list),
-#             "max": np.max(cost_list),
-#             "mean": np.mean(cost_list),
-#             "std": np.std(cost_list),
-#         },
-#         "iter": {
-#             "min": np.min(iter_list),
-#             "max": np.max(iter_list),
-#             "mean": np.mean(iter_list),
-#             "std": np.std(iter_list),
-#         },
-#     }

@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Any
+import json
 
 from common.database.bigquery import BigQueryClient
 from common.database.bigquery.sql.find_job import sql_for_find_job
@@ -107,5 +108,7 @@ def _convert_queryjob_into_dict(jobs: Any) -> Sequence[dict[str, Any]]:
         row["noise_twoqubit_value"] = job["noise_twoqubit_value"]
         row["constraints"] = job["constraints"]
         row["bounds"] = job["bounds"]
+        row["evol"] = job["evol"]
+        row["config"] = json.loads(job["config"])
         rows.append(row)
     return rows
