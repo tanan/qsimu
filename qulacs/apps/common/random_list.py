@@ -32,8 +32,8 @@ def randomize(nqubit, config):
     init_random_list = np.array([])
     if config["gate"]["time"]["type"] == "random":
         init_random_list = generate_random_time(
-            config["gate"]["time"]["min_val"],
-            config["gate"]["time"]["max_val"],
+            config["gate"]["time"]["initial"]["min_val"],
+            config["gate"]["time"]["initial"]["max_val"],
             config["depth"],
         )
 

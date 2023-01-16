@@ -18,6 +18,9 @@ gate:
     type: "random"
     min_val: -3
     max_val: 3
+    init:
+      min_val: -1
+      max_val: 1
   bn:
     # type: "static_random"
     # range: 1
