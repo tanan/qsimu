@@ -108,7 +108,7 @@ def _convert_queryjob_into_dict(jobs: Any) -> Sequence[dict[str, Any]]:
         row["noise_twoqubit_value"] = job["noise_twoqubit_value"]
         row["constraints"] = job["constraints"]
         row["bounds"] = job["bounds"]
-        row["evol"] = job["evol"]
+        row["t_evol"] = job["t_evol"]
         row["config"] = json.loads(job["config"])
         rows.append(row)
     return rows
