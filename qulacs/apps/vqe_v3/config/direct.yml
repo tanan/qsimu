@@ -1,0 +1,27 @@
+depth: 4
+nqubit: 7
+optimize:
+  method: "SLSQP"
+gate:
+  type: "direct"
+  parametric_rotation_gate_set: 3
+  constraints: False
+  bounds: False
+  noise:
+    singlequbit:
+      enabled: False
+      value: None
+    twoqubit:
+      enabled: False
+      value: None
+  bn:
+    type: "static"
+  cn:
+    type: "static"
+  r:
+    type: "static"
+gcp:
+  project:
+    id: "anan-project"
+  bigquery:
+    import: True
