@@ -63,7 +63,7 @@ def run(config):
     ansatz = init_ansatz(config)
 
     params = config['gate']['params']
-    print(f"cost: ${cost(params)}")
+    print(f"{config['gate']['noise']['singlequbit']['value']},{config['gate']['noise']['twoqubit']['value']},{cost(params)}")
 
 
 if __name__ == "__main__":
@@ -72,5 +72,7 @@ if __name__ == "__main__":
     iter_num = 10
     with open(path, "r") as f:
         config = yaml.safe_load(f)
-        for k in range(iter_num):
-            run(config)
+        for i in range(20):
+            config['gate']['noise']['twoqubit']['value'] = 0.01 * i
+            for k in range(iter_num):
+                run(config)
