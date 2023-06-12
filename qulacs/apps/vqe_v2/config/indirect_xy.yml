@@ -1,11 +1,11 @@
-depth: 12
-nqubit: 4
+depth: 16
+nqubit: 7
 optimize:
   method: "SLSQP"
 gate:
   type: "indirect_xy"
   parametric_rotation_gate_set: 4
-  constraints: False
+  constraints: True
   bounds: False
   noise:
     singlequbit:
@@ -16,8 +16,9 @@ gate:
       value: None
   time:
     type: "random"
-    min_val: -3
-    max_val: 3
+    evol: "absolute"
+    min_val: -1
+    max_val: 1
     init:
       min_val: -1
       max_val: 1
@@ -36,4 +37,4 @@ gcp:
   project:
     id: "anan-project"
   bigquery:
-    import: False
+    import: True
