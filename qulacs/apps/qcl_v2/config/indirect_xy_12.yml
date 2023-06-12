@@ -1,0 +1,29 @@
+depth: 12
+nqubit: 3
+gate:
+  type: "indirect_xy"
+  parametric_rotation_gate_set: 4
+  max_time: 10
+  constraints: ""
+  bounds: False
+  noise:
+    singlequbit:
+      enabled: False
+      value: None
+    twoqubit:
+      enabled: False
+      value: None
+  time:
+    type: "random"
+    min_val: -1
+    max_val: 1
+  bn:
+    type: "static"
+    value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+    # range: 2
+  cn:
+    type: "static"
+    value: [1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+  r:
+    type: "static"
+    value: [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
