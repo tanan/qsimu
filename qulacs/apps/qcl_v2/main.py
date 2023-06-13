@@ -56,7 +56,7 @@ def create_circuit_for_encoding(n_qubits: int):
         angle_y = np.arcsin(x)
         angle_z = np.arccos(x**2)
 
-        for i in range(2):
+        for i in range(n_qubits):
             circuit.add_RY_gate(i, angle_y)
             circuit.add_RZ_gate(i, angle_z)
     
@@ -68,10 +68,10 @@ def create_circuit_for_encoding(n_qubits: int):
 def create_qcl_pred(n_qubits: int, op: Operator, u_in: Callable[[float], QuantumCircuit]):
     obs = Observable(n_qubits)
     obs.add_operator(op.coef, op.label)
-    state = QuantumState(n_qubits)
-    state.set_zero_state()
 
     def predict(x: float, u_out: QuantumCircuit):
+        state = QuantumState(n_qubits)
+        state.set_zero_state()
         u_in(x).update_quantum_state(state)
         u_out.update_quantum_state(state)
         res = obs.get_expectation_value(state)
@@ -85,6 +85,7 @@ def cost(params: any, qcl_pred: Callable[[float, Ansatz], float], ansatz: Ansatz
     u_out = ansatz.create_ansatz(params)
     y_pred = [qcl_pred(x, u_out) for x in x_train]
     L = ((y_pred - y_train) ** 2).mean()
+    print(L)
     return L
 
 
@@ -121,7 +122,8 @@ if __name__ == "__main__":
             return cost(params, qcl_pred, ansatz, x_train, y_train)
 
         # minimize
-        result = minimize(cost_fn, init_params, method="Nelder-Mead")
+        options = {"maxiter": 100}
+        result = minimize(cost_fn, init_params, options=options, method="Nelder-Mead")
 
         # show results
         u_out = ansatz.create_ansatz(result.x)
