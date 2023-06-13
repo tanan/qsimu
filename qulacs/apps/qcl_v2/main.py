@@ -34,6 +34,7 @@ def init_ansatz(config: dict):
         ansatz = XYAnsatz(
             config["nqubit"],
             config["depth"],
+            config["gate"]["noise"],
             config["gate"]["parametric_rotation_gate_set"],
             config["gate"]["time"],
             config["gate"]["bn"],
@@ -42,6 +43,7 @@ def init_ansatz(config: dict):
         ansatz = DirectAnsatz(
             config["nqubit"],
             config["depth"],
+            config["gate"]["noise"],
             config["gate"]["parametric_rotation_gate_set"],
         )
     return ansatz
