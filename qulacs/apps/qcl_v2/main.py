@@ -18,13 +18,13 @@ from common.ansatz import (
 from common.random_list import randomize
 
 
-def create_train_data(x_min, x_max, num_x_train=50, mag_noise=0.05):
+def create_train_data(x_min: float, x_max: float, num_x_train: int = 50, mag_noise: float = 0.05):
     x_train = x_min + (x_max - x_min) * np.random.rand(num_x_train)
     y_train = func_sin(x_train) + mag_noise * np.random.randn(num_x_train)
     return x_train, y_train
 
 
-def init_ansatz(config):
+def init_ansatz(config: dict):
     if config["gate"]["bn"]["type"] == "static_random":
         config["gate"]["bn"]["value"] = np.random.rand(config["nqubit"]) * config[
             "gate"
@@ -47,10 +47,10 @@ def init_ansatz(config):
     return ansatz
 
 
-def create_circuit_for_encoding(n_qubits):
+def create_circuit_for_encoding(n_qubits: int):
     circuit = QuantumCircuit(n_qubits)
 
-    def circuit_for_encoding(x):
+    def circuit_for_encoding(x: float):
         angle_y = np.arcsin(x)
         angle_z = np.arccos(x**2)
 
@@ -79,8 +79,9 @@ def create_qcl_pred(n_qubits: int, op: Operator, u_in: Callable[[float], Quantum
     return predict
 
 
-def cost(params, qcl_pred, ansatz, x_train, y_train):
-    y_pred = [qcl_pred(x, ansatz.create_ansatz(params)) for x in x_train]
+def cost(params: any, qcl_pred: Callable[[float, Ansatz], float], ansatz: Ansatz, x_train: any, y_train: any):
+    u_out = ansatz.create_ansatz(params)
+    y_pred = [qcl_pred(x, u_out) for x in x_train]
     L = ((y_pred - y_train) ** 2).mean()
     return L
 
@@ -110,7 +111,8 @@ if __name__ == "__main__":
 
         ## save init y
         x_init = np.arange(x_min, x_max, 0.02)
-        y_init = [qcl_pred(x, ansatz.create_ansatz(init_params)) for x in x_init]
+        u_out = ansatz.create_ansatz(init_params)
+        y_init = [qcl_pred(x, u_out) for x in x_init]
 
         ## prepare cost_fn
         def cost_fn(params):
@@ -120,5 +122,6 @@ if __name__ == "__main__":
         result = minimize(cost_fn, init_params, method="Nelder-Mead")
 
         # show results
-        y_pred = [qcl_pred(x, ansatz.create_ansatz(result.x)) for x in x_init]
+        u_out = ansatz.create_ansatz(result.x)
+        y_pred = [qcl_pred(x, u_out) for x in x_init]
         create_qcl_graph(x_init, y_init, x_train, y_train, y_pred)
